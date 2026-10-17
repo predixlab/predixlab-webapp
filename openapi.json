@@ -1,0 +1,2889 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "PredixLab",
+        "description": "PredixLab API - Stock prediction and analysis platform",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/auth/register/request-code": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request verification code for registration",
+                "description": "Request email verification code for registration",
+                "operationId": "request_registration_code_api_v1_auth_register_request_code_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailRegisterCodeRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register new user",
+                "description": "Register a new user with email verification",
+                "operationId": "register_user_api_v1_auth_register_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegister"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login/request-code": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request email verification code for login",
+                "description": "Request email verification code for login",
+                "operationId": "request_login_code_api_v1_auth_login_request_code_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailLoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login with email verification code",
+                "description": "Login user with email verification code",
+                "operationId": "login_user_api_v1_auth_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailLoginVerify"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/google": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Initiate Google OAuth login",
+                "description": "Initiate Google OAuth login",
+                "operationId": "google_login_api_v1_auth_google_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/google/callback": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Google OAuth callback",
+                "description": "Handle Google OAuth callback: issue short-lived code and redirect to frontend",
+                "operationId": "google_callback_api_v1_auth_google_callback_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/microsoft": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Initiate Microsoft OAuth login",
+                "description": "Initiate Microsoft OAuth login",
+                "operationId": "microsoft_login_api_v1_auth_microsoft_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/microsoft/callback": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Microsoft OAuth callback",
+                "description": "Handle Microsoft OAuth callback: issue short-lived code and redirect to frontend",
+                "operationId": "microsoft_callback_api_v1_auth_microsoft_callback_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/oauth/exchange": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Exchange login code for tokens",
+                "description": "Exchange a short-lived OAuth login code for access/refresh tokens.",
+                "operationId": "exchange_oauth_code_api_v1_auth_oauth_exchange_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OAuthExchangeRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/oauth/confirm": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Confirm OAuth user registration",
+                "description": "Confirm OAuth user registration after frontend confirmation",
+                "operationId": "confirm_oauth_user_api_v1_auth_oauth_confirm_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OAuthConfirmRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/oauth/link": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Link OAuth account to existing user",
+                "description": "Link OAuth account to currently authenticated user",
+                "operationId": "link_oauth_account_api_v1_auth_oauth_link_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OAuthLinkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh access token",
+                "description": "Refresh access token using refresh token",
+                "operationId": "refresh_access_token_api_v1_auth_refresh_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "description": "Logout current user and revoke refresh token",
+                "operationId": "logout_api_v1_auth_logout_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/RefreshTokenRequest"
+                                    }
+                                ],
+                                "title": "Refresh Request"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout/all": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout from all devices",
+                "description": "Logout user from all devices by revoking all refresh tokens",
+                "operationId": "logout_all_devices_api_v1_auth_logout_all_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/profile": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get current user profile",
+                "description": "Get current authenticated user profile information",
+                "operationId": "get_user_profile_api_v1_user_profile_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user profile",
+                "description": "Update current user's profile information",
+                "operationId": "update_user_profile_api_v1_user_profile_patch",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/stocks/dates": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get available dates",
+                "description": "Get available dates",
+                "operationId": "get_available_dates_api_v1_stocks_dates_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AvailableDatesResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/stocks/picks/{date}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get daily picks",
+                "description": "Get daily picks for specified date and optional direction\n\nReturns DailyPicksResponse with both rising and falling picks.\nIf direction is specified, the other direction will be empty.\nIf direction is not specified, both directions will contain their respective picks.",
+                "operationId": "get_daily_picks_api_v1_stocks_picks__date__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    },
+                    {
+                        "name": "direction",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Direction"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Optional direction filter (rising/falling)",
+                            "title": "Direction"
+                        },
+                        "description": "Optional direction filter (rising/falling)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DailyPicksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/picks/{date}/rising": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get rising picks for date",
+                "description": "Get rising picks for specified date",
+                "operationId": "get_rising_picks_api_v1_stocks_picks__date__rising_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DailyPicksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/picks/{date}/falling": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get falling picks for date",
+                "description": "Get falling picks for specified date",
+                "operationId": "get_falling_picks_api_v1_stocks_picks__date__falling_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DailyPicksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/latest-picks": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get latest picks based on membership",
+                "description": "Get latest picks based on user membership status\n\nPremium users get latest trading day picks.\nFree users get picks from 10 days ago.",
+                "operationId": "get_latest_picks_api_v1_stocks_latest_picks_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DailyPicksResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/stocks/predictions/{date}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get predictions",
+                "description": "Get predictions for specified date",
+                "operationId": "get_predictions_api_v1_stocks_predictions__date__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PredictionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/latest-predictions": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get latest predictions",
+                "description": "Get predictions for the latest available date",
+                "operationId": "get_latest_predictions_api_v1_stocks_latest_predictions_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "market",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Market to get predictions for",
+                            "default": "us",
+                            "title": "Market"
+                        },
+                        "description": "Market to get predictions for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LatestPredictionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/predictions/{date}/{instrument}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get prediction for specific instrument",
+                "description": "Get prediction for a specific date and instrument",
+                "operationId": "get_prediction_by_date_and_instrument_api_v1_stocks_predictions__date___instrument__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    },
+                    {
+                        "name": "instrument",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Instrument"
+                        }
+                    },
+                    {
+                        "name": "market",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Market to get prediction for",
+                            "default": "us",
+                            "title": "Market"
+                        },
+                        "description": "Market to get prediction for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Prediction"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/data/{symbol}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get stock historical data",
+                "description": "Get historical data for a specific stock symbol\n\nFilter parameters (in priority order):\n1. start_date + end_date: Get data within specific date range\n2. period: Get data for specific period (1m, 3m, 6m, 9m, 1y, 2y, 3y)\n3. No filters: Return all available data",
+                "operationId": "get_stock_data_api_v1_stocks_data__symbol__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Symbol"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Start date in YYYY-MM-DD format",
+                            "title": "Start Date"
+                        },
+                        "description": "Start date in YYYY-MM-DD format"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "End date in YYYY-MM-DD format",
+                            "title": "End Date"
+                        },
+                        "description": "End date in YYYY-MM-DD format"
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Period for historical data (1m, 3m, 6m, 9m, 1y, 2y, 3y)",
+                            "title": "Period"
+                        },
+                        "description": "Period for historical data (1m, 3m, 6m, 9m, 1y, 2y, 3y)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockDataResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/symbols": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Get all available stock symbols",
+                "description": "Get all available stock symbols",
+                "operationId": "get_all_stocks_api_v1_stocks_symbols_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer",
+                                    "maximum": 1000,
+                                    "minimum": 1
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Limit number of results",
+                            "title": "Limit"
+                        },
+                        "description": "Limit number of results"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Offset for pagination",
+                            "default": 0,
+                            "title": "Offset"
+                        },
+                        "description": "Offset for pagination"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/backtest/{symbol}": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Run backtest analysis",
+                "description": "Run backtest analysis for a specific stock symbol",
+                "operationId": "run_backtest_api_v1_stocks_backtest__symbol__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "symbol",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Symbol"
+                        }
+                    },
+                    {
+                        "name": "period_days",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 365,
+                            "minimum": 30,
+                            "description": "Number of days to analyze",
+                            "default": 90,
+                            "title": "Period Days"
+                        },
+                        "description": "Number of days to analyze"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BacktestResult"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stocks/search": {
+            "get": {
+                "tags": [
+                    "Stocks"
+                ],
+                "summary": "Search stocks by symbol",
+                "description": "Search for stocks by symbol with configurable match type",
+                "operationId": "search_stocks_api_v1_stocks_search_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Search query for stock symbols",
+                            "title": "Q"
+                        },
+                        "description": "Search query for stock symbols"
+                    },
+                    {
+                        "name": "match_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/MatchType"
+                                }
+                            ],
+                            "description": "Match type: prefix or infix",
+                            "default": "infix",
+                            "title": "Match Type"
+                        },
+                        "description": "Match type: prefix or infix"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer",
+                                    "maximum": 100,
+                                    "minimum": 1
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "description": "Limit number of results",
+                            "default": 50,
+                            "title": "Limit"
+                        },
+                        "description": "Limit number of results"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscription/create-checkout-session": {
+            "post": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Create Checkout Session",
+                "description": "Create a Stripe checkout session for subscription with free trial",
+                "operationId": "create_checkout_session_api_v1_subscription_create_checkout_session_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCheckoutSessionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CheckoutSessionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/info": {
+            "get": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Get Subscription Info",
+                "description": "Get current user's subscription information",
+                "operationId": "get_subscription_info_api_v1_subscription_info_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SubscriptionInfo"
+                                        },
+                                        {
+                                            "type": "null"
+                                        }
+                                    ],
+                                    "title": "Response Get Subscription Info Api V1 Subscription Info Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/cancel": {
+            "post": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Cancel Subscription",
+                "description": "Cancel user's subscription at the end of the current period",
+                "operationId": "cancel_subscription_api_v1_subscription_cancel_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/webhook": {
+            "post": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Stripe Webhook",
+                "description": "Handle Stripe webhook events",
+                "operationId": "stripe_webhook_api_v1_subscription_webhook_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscription/prices": {
+            "get": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Get Subscription Prices",
+                "description": "Get available subscription prices",
+                "operationId": "get_subscription_prices_api_v1_subscription_prices_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubscriptionPricesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscription/publishable-key": {
+            "get": {
+                "tags": [
+                    "subscription"
+                ],
+                "summary": "Get Publishable Key",
+                "description": "Get Stripe publishable key for frontend",
+                "operationId": "get_publishable_key_api_v1_subscription_publishable_key_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/options/anomalies": {
+            "get": {
+                "tags": [
+                    "Options"
+                ],
+                "summary": "Get anomalous option trades",
+                "description": "Return anomalous option trades from the database grouped by symbol",
+                "operationId": "get_option_anomalies_api_v1_options_anomalies_get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 0,
+                            "title": "Offset"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 20,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AnomalyOption"
+                                    },
+                                    "title": "Response Get Option Anomalies Api V1 Options Anomalies Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/options/anomalies/latest": {
+            "get": {
+                "tags": [
+                    "Options"
+                ],
+                "summary": "Get anomalous option trades",
+                "description": "Return anomalous option trades from the database grouped by symbol",
+                "operationId": "get_latest_option_anomalies_api_v1_options_anomalies_latest_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/AnomalyOption"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get Latest Option Anomalies Api V1 Options Anomalies Latest Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/options/anomalies/{date}": {
+            "get": {
+                "tags": [
+                    "Options"
+                ],
+                "summary": "Get anomalous option trades for a specific date",
+                "description": "Return anomalous option trades from the database for a specific date",
+                "operationId": "get_option_anomalies_by_date_api_v1_options_anomalies__date__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AnomalyOption"
+                                    },
+                                    "title": "Response Get Option Anomalies By Date Api V1 Options Anomalies  Date  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "tags": [
+                    "Root"
+                ],
+                "summary": "Root",
+                "description": "Root endpoint",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check",
+                "description": "Health check endpoint",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/info": {
+            "get": {
+                "tags": [
+                    "API Info"
+                ],
+                "summary": "Api Info",
+                "description": "API information endpoint",
+                "operationId": "api_info_api_v1_info_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/.well-known/microsoft-identity-association.json": {
+            "get": {
+                "tags": [
+                    "Well-known"
+                ],
+                "summary": "Microsoft Identity Association",
+                "description": "Microsoft identity association endpoint for OAuth configuration",
+                "operationId": "microsoft_identity_association__well_known_microsoft_identity_association_json_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AnomalyContract": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "title": "Symbol"
+                    },
+                    "contract": {
+                        "type": "string",
+                        "title": "Contract"
+                    },
+                    "option_type": {
+                        "$ref": "#/components/schemas/OptionType"
+                    },
+                    "strike": {
+                        "type": "number",
+                        "title": "Strike"
+                    },
+                    "expiration": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Expiration"
+                    },
+                    "open_interest_today": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Open Interest Today"
+                    },
+                    "open_interest_previous": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Open Interest Previous"
+                    },
+                    "oi_change": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Oi Change"
+                    },
+                    "volume_today": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Volume Today"
+                    },
+                    "volume_previous": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Volume Previous"
+                    },
+                    "volume_change": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Volume Change"
+                    },
+                    "in_the_money": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "In The Money"
+                    },
+                    "last_price": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Price"
+                    },
+                    "underlying_price": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Underlying Price"
+                    },
+                    "anomaly_score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Anomaly Score"
+                    },
+                    "position_type": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PositionType"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "contract",
+                    "option_type",
+                    "strike"
+                ],
+                "title": "AnomalyContract"
+            },
+            "AnomalyOption": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "title": "Symbol"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Date"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/AnomalyContract"
+                        },
+                        "type": "array",
+                        "title": "Items"
+                    },
+                    "anomaly_score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Anomaly Score"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "date"
+                ],
+                "title": "AnomalyOption"
+            },
+            "AvailableDatesResponse": {
+                "properties": {
+                    "dates": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Dates"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "dates"
+                ],
+                "title": "AvailableDatesResponse"
+            },
+            "BacktestResult": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "title": "Symbol"
+                    },
+                    "period_days": {
+                        "type": "integer",
+                        "title": "Period Days"
+                    },
+                    "signals": {
+                        "items": {
+                            "$ref": "#/components/schemas/BacktestSignal"
+                        },
+                        "type": "array",
+                        "title": "Signals"
+                    },
+                    "performance": {
+                        "type": "object",
+                        "title": "Performance"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "period_days",
+                    "signals",
+                    "performance"
+                ],
+                "title": "BacktestResult"
+            },
+            "BacktestSignal": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    },
+                    "direction": {
+                        "$ref": "#/components/schemas/Direction"
+                    },
+                    "score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Score"
+                    },
+                    "strategy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Strategy"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date",
+                    "direction"
+                ],
+                "title": "BacktestSignal"
+            },
+            "BillingInterval": {
+                "type": "string",
+                "enum": [
+                    "month",
+                    "year"
+                ],
+                "title": "BillingInterval"
+            },
+            "CheckoutSessionResponse": {
+                "properties": {
+                    "checkout_url": {
+                        "type": "string",
+                        "title": "Checkout Url"
+                    },
+                    "session_id": {
+                        "type": "string",
+                        "title": "Session Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "checkout_url",
+                    "session_id"
+                ],
+                "title": "CheckoutSessionResponse"
+            },
+            "CreateCheckoutSessionRequest": {
+                "properties": {
+                    "billing_interval": {
+                        "$ref": "#/components/schemas/BillingInterval"
+                    },
+                    "success_url": {
+                        "type": "string",
+                        "title": "Success Url"
+                    },
+                    "cancel_url": {
+                        "type": "string",
+                        "title": "Cancel Url"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "billing_interval",
+                    "success_url",
+                    "cancel_url"
+                ],
+                "title": "CreateCheckoutSessionRequest"
+            },
+            "DailyPick": {
+                "properties": {
+                    "instrument": {
+                        "type": "string",
+                        "title": "Instrument"
+                    },
+                    "direction": {
+                        "$ref": "#/components/schemas/Direction"
+                    },
+                    "score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Score"
+                    },
+                    "final_score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Final Score"
+                    },
+                    "weighted_score": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Weighted Score"
+                    },
+                    "strategy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Strategy"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "instrument",
+                    "direction",
+                    "date"
+                ],
+                "title": "DailyPick"
+            },
+            "DailyPicksResponse": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "title": "Date"
+                    },
+                    "risings": {
+                        "items": {
+                            "$ref": "#/components/schemas/DailyPick"
+                        },
+                        "type": "array",
+                        "title": "Risings"
+                    },
+                    "fallings": {
+                        "items": {
+                            "$ref": "#/components/schemas/DailyPick"
+                        },
+                        "type": "array",
+                        "title": "Fallings"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date",
+                    "risings",
+                    "fallings"
+                ],
+                "title": "DailyPicksResponse"
+            },
+            "Direction": {
+                "type": "string",
+                "enum": [
+                    "rising",
+                    "declining"
+                ],
+                "title": "Direction"
+            },
+            "EmailLoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "title": "EmailLoginRequest"
+            },
+            "EmailLoginVerify": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "code": {
+                        "type": "string",
+                        "title": "Code"
+                    },
+                    "redirect_uri": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Redirect Uri"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "code"
+                ],
+                "title": "EmailLoginVerify"
+            },
+            "EmailRegisterCodeRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "preferred_language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Language"
+                            }
+                        ],
+                        "default": "en"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "title": "EmailRegisterCodeRequest"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Language": {
+                "type": "string",
+                "enum": [
+                    "zh",
+                    "en"
+                ],
+                "title": "Language"
+            },
+            "LatestPredictionsResponse": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "title": "Date"
+                    },
+                    "predictions": {
+                        "items": {
+                            "$ref": "#/components/schemas/Prediction"
+                        },
+                        "type": "array",
+                        "title": "Predictions"
+                    },
+                    "total_count": {
+                        "type": "integer",
+                        "title": "Total Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date",
+                    "predictions",
+                    "total_count"
+                ],
+                "title": "LatestPredictionsResponse"
+            },
+            "MatchType": {
+                "type": "string",
+                "enum": [
+                    "prefix",
+                    "infix"
+                ],
+                "title": "MatchType"
+            },
+            "OAuthConfirmRequest": {
+                "properties": {
+                    "oauth_token": {
+                        "type": "string",
+                        "title": "Oauth Token"
+                    },
+                    "confirmed": {
+                        "type": "boolean",
+                        "title": "Confirmed",
+                        "default": true
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "oauth_token"
+                ],
+                "title": "OAuthConfirmRequest"
+            },
+            "OAuthExchangeRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code"
+                    },
+                    "provider": {
+                        "$ref": "#/components/schemas/OAuthProvider"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "code",
+                    "provider"
+                ],
+                "title": "OAuthExchangeRequest"
+            },
+            "OAuthLinkRequest": {
+                "properties": {
+                    "oauth_token": {
+                        "type": "string",
+                        "title": "Oauth Token"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "oauth_token"
+                ],
+                "title": "OAuthLinkRequest"
+            },
+            "OAuthProvider": {
+                "type": "string",
+                "enum": [
+                    "google",
+                    "microsoft"
+                ],
+                "title": "OAuthProvider"
+            },
+            "OptionType": {
+                "type": "string",
+                "enum": [
+                    "calls",
+                    "puts"
+                ],
+                "title": "OptionType"
+            },
+            "PositionType": {
+                "type": "string",
+                "enum": [
+                    "Natural",
+                    "NewContract",
+                    "NewPosition",
+                    "ClosePosition",
+                    "HighActivity"
+                ],
+                "title": "PositionType"
+            },
+            "Prediction": {
+                "properties": {
+                    "instrument": {
+                        "type": "string",
+                        "title": "Instrument"
+                    },
+                    "us_rise_1d": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Us Rise 1D"
+                    },
+                    "us_rise_5d": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Us Rise 5D"
+                    },
+                    "us_decline_1d": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Us Decline 1D"
+                    },
+                    "us_decline_5d": {
+                        "anyOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Us Decline 5D"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "instrument",
+                    "date"
+                ],
+                "title": "Prediction"
+            },
+            "PredictionsResponse": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "title": "Date"
+                    },
+                    "predictions": {
+                        "items": {
+                            "$ref": "#/components/schemas/Prediction"
+                        },
+                        "type": "array",
+                        "title": "Predictions"
+                    },
+                    "total_count": {
+                        "type": "integer",
+                        "title": "Total Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "date",
+                    "predictions",
+                    "total_count"
+                ],
+                "title": "PredictionsResponse"
+            },
+            "RefreshTokenRequest": {
+                "properties": {
+                    "refresh_token": {
+                        "type": "string",
+                        "title": "Refresh Token"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "refresh_token"
+                ],
+                "title": "RefreshTokenRequest"
+            },
+            "StockData": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "title": "Symbol"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    },
+                    "open": {
+                        "type": "number",
+                        "title": "Open"
+                    },
+                    "high": {
+                        "type": "number",
+                        "title": "High"
+                    },
+                    "low": {
+                        "type": "number",
+                        "title": "Low"
+                    },
+                    "close": {
+                        "type": "number",
+                        "title": "Close"
+                    },
+                    "volume": {
+                        "type": "integer",
+                        "title": "Volume"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "date",
+                    "open",
+                    "high",
+                    "low",
+                    "close",
+                    "volume"
+                ],
+                "title": "StockData"
+            },
+            "StockDataResponse": {
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "title": "Symbol"
+                    },
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/StockData"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "total_records": {
+                        "type": "integer",
+                        "title": "Total Records"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbol",
+                    "data",
+                    "total_records"
+                ],
+                "title": "StockDataResponse"
+            },
+            "StockListResponse": {
+                "properties": {
+                    "symbols": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Symbols"
+                    },
+                    "total_count": {
+                        "type": "integer",
+                        "title": "Total Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "symbols",
+                    "total_count"
+                ],
+                "title": "StockListResponse"
+            },
+            "SubscriptionInfo": {
+                "properties": {
+                    "status": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/SubscriptionStatus"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "billing_interval": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/BillingInterval"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "current_period_end": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Current Period End"
+                    },
+                    "trial_end": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Trial End"
+                    },
+                    "cancel_at_period_end": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Cancel At Period End"
+                    }
+                },
+                "type": "object",
+                "title": "SubscriptionInfo"
+            },
+            "SubscriptionPrice": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "interval": {
+                        "type": "string",
+                        "title": "Interval"
+                    },
+                    "amount": {
+                        "type": "integer",
+                        "title": "Amount"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "title": "Currency"
+                    },
+                    "product": {
+                        "type": "string",
+                        "title": "Product"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "interval",
+                    "amount",
+                    "currency",
+                    "product"
+                ],
+                "title": "SubscriptionPrice"
+            },
+            "SubscriptionPricesResponse": {
+                "properties": {
+                    "prices": {
+                        "items": {
+                            "$ref": "#/components/schemas/SubscriptionPrice"
+                        },
+                        "type": "array",
+                        "title": "Prices"
+                    },
+                    "trial_period_days": {
+                        "type": "integer",
+                        "title": "Trial Period Days"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "prices",
+                    "trial_period_days"
+                ],
+                "title": "SubscriptionPricesResponse"
+            },
+            "SubscriptionStatus": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "canceled",
+                    "past_due",
+                    "unpaid",
+                    "trialing"
+                ],
+                "title": "SubscriptionStatus"
+            },
+            "Token": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "refresh_token": {
+                        "type": "string",
+                        "title": "Refresh Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type",
+                        "default": "bearer"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "title": "Expires In"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token",
+                    "refresh_token",
+                    "expires_in",
+                    "user"
+                ],
+                "title": "Token"
+            },
+            "User": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UserRole"
+                            }
+                        ],
+                        "default": "free"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active",
+                        "default": true
+                    },
+                    "preferred_language": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Language"
+                            }
+                        ],
+                        "default": "en"
+                    },
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated At"
+                    },
+                    "last_login": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Login"
+                    },
+                    "email_verified": {
+                        "type": "boolean",
+                        "title": "Email Verified",
+                        "default": false
+                    },
+                    "premium_expires_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Premium Expires At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "User"
+            },
+            "UserRegister": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "code": {
+                        "type": "string",
+                        "title": "Code"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "preferred_language": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Language"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "default": "en"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "code"
+                ],
+                "title": "UserRegister"
+            },
+            "UserRole": {
+                "type": "string",
+                "enum": [
+                    "free",
+                    "premium",
+                    "admin"
+                ],
+                "title": "UserRole"
+            },
+            "UserUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "preferred_language": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Language"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "UserUpdate"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

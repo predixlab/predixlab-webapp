@@ -1,0 +1,710 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/ibm-plex-mono-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------------ *
+ * PredixLab design system
+ *
+ * Light-first market analysis workspace. Broad tonal fields establish
+ * hierarchy before borders do; colour remains reserved for action,
+ * selection and signed market states.
+ *
+ * Semantic tokens live as CSS variables so the theme can switch at
+ * runtime; `@theme inline` maps them into Tailwind utilities (e.g.
+ * `bg-surface`, `text-text-secondary`, `text-bull`).
+ * ------------------------------------------------------------------ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Light theme (default) -------------------------------------------- */
+:root,
+[data-theme="light"] {
+  --pl-app: #f4f5f2;
+  --pl-surface: #ffffff;
+  --pl-surface-raised: #f7f8f5;
+  --pl-surface-overlay: #ffffff;
+  --pl-surface-sunken: #ecefeb;
+  --pl-surface-strong: #e2e7e0;
+  --pl-sidebar: #1c2b24;
+  --pl-nav-text: #b7c6bc;
+  --pl-nav-muted: #93a89a;
+  --pl-nav-active: #f2f6ee;
+  --pl-nav-hover: #273a30;
+  --pl-nav-border: #35473b;
+  --pl-nav-accent: #b5c4ff;
+  --pl-border: #e0e5dd;
+  --pl-border-strong: #c4cdc3;
+
+  --pl-text-primary: #24332b;
+  --pl-text-secondary: #526056;
+  --pl-text-muted: #5c685f;
+  --pl-text-inverse: #ffffff;
+
+  --pl-accent-50: #f0f3ff;
+  --pl-accent-100: #e0e7ff;
+  --pl-accent-300: #afbefd;
+  --pl-accent-400: #435bcc;
+  --pl-accent-500: #465ed1;
+  --pl-accent-600: #394fba;
+  --pl-accent-700: #3045a7;
+  --pl-accent-soft: rgba(70, 94, 209, 0.075);
+  --pl-accent-line: rgba(70, 94, 209, 0.24);
+  --pl-on-accent: #ffffff;
+
+  /* Market semantics. `-vivid` is the graphic value used for candles,
+     bars and fills; the base value is tuned to pass 4.5:1 as text. */
+  --pl-bull: #15735b;
+  --pl-bull-vivid: #21886d;
+  --pl-bull-soft: rgba(33, 136, 109, 0.08);
+  --pl-bull-line: rgba(33, 136, 109, 0.24);
+  --pl-bear: #be3e4c;
+  --pl-bear-vivid: #dd5b65;
+  --pl-bear-soft: rgba(221, 91, 101, 0.08);
+  --pl-bear-line: rgba(221, 91, 101, 0.24);
+  /* Solid fill for destructive buttons; white on this passes 4.5:1. */
+  --pl-danger: #b73543;
+  --pl-warn: #906011;
+  --pl-warn-vivid: #b68227;
+  --pl-warn-soft: rgba(201, 149, 53, 0.1);
+  --pl-warn-line: rgba(201, 149, 53, 0.3);
+  --pl-info: #276f92;
+  --pl-info-vivid: #4299b8;
+  --pl-info-soft: rgba(66, 153, 184, 0.09);
+  --pl-info-line: rgba(66, 153, 184, 0.27);
+  --pl-gex-flip: #b68227;
+
+  --pl-shadow-sm: 0 1px 3px rgba(25, 43, 31, 0.04);
+  --pl-shadow-md: 0 5px 18px -5px rgba(25, 43, 31, 0.1), 0 1px 3px rgba(25, 43, 31, 0.04);
+  --pl-shadow-lg: 0 24px 72px -20px rgba(25, 43, 31, 0.25), 0 4px 16px -4px rgba(25, 43, 31, 0.08);
+  --pl-ring: rgba(70, 94, 209, 0.4);
+  --pl-scrim: rgba(17, 29, 22, 0.42);
+}
+
+/* Dark theme ------------------------------------------------------- */
+[data-theme="dark"] {
+  --pl-app: #111915;
+  --pl-surface: #19241e;
+  --pl-surface-raised: #202e26;
+  --pl-surface-overlay: #25342b;
+  --pl-surface-sunken: #0e1611;
+  --pl-surface-strong: #324038;
+  --pl-sidebar: #101913;
+  --pl-nav-hover: #223129;
+  --pl-nav-border: #2c3c31;
+  --pl-border: #304136;
+  --pl-border-strong: #4b5e50;
+
+  --pl-text-primary: #ecf1e9;
+  --pl-text-secondary: #b9c7bb;
+  --pl-text-muted: #9cac9e;
+  --pl-text-inverse: #111915;
+
+  --pl-accent-50: #19213b;
+  --pl-accent-100: #253254;
+  --pl-accent-300: #8199ee;
+  --pl-accent-400: #abbaff;
+  --pl-accent-500: #526dde;
+  --pl-accent-600: #4a63cd;
+  --pl-accent-700: #4056bb;
+  --pl-accent-soft: rgba(129, 153, 238, 0.12);
+  --pl-accent-line: rgba(171, 186, 255, 0.3);
+  --pl-on-accent: #ffffff;
+
+  --pl-bull: #6dccab;
+  --pl-bull-vivid: #49ad8b;
+  --pl-bull-soft: rgba(73, 173, 139, 0.12);
+  --pl-bull-line: rgba(109, 204, 171, 0.28);
+  --pl-bear: #f39199;
+  --pl-bear-vivid: #e17581;
+  --pl-bear-soft: rgba(225, 117, 129, 0.1);
+  --pl-bear-line: rgba(243, 145, 153, 0.28);
+  --pl-danger: #b73543;
+  --pl-warn: #e8be6a;
+  --pl-warn-vivid: #cfa14f;
+  --pl-warn-soft: rgba(207, 161, 79, 0.12);
+  --pl-warn-line: rgba(232, 190, 106, 0.28);
+  --pl-info: #88c8dc;
+  --pl-info-vivid: #65adca;
+  --pl-info-soft: rgba(101, 173, 202, 0.12);
+  --pl-info-line: rgba(136, 200, 220, 0.28);
+  --pl-gex-flip: #cfa14f;
+
+  --pl-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --pl-shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.5);
+  --pl-shadow-lg: 0 18px 44px -12px rgba(0, 0, 0, 0.7);
+  --pl-ring: rgba(171, 186, 255, 0.5);
+  --pl-scrim: rgba(6, 14, 9, 0.7);
+}
+
+@theme inline {
+  --color-app: var(--pl-app);
+  --color-surface: var(--pl-surface);
+  --color-surface-raised: var(--pl-surface-raised);
+  --color-surface-overlay: var(--pl-surface-overlay);
+  --color-surface-sunken: var(--pl-surface-sunken);
+  --color-surface-strong: var(--pl-surface-strong);
+  --color-sidebar: var(--pl-sidebar);
+  --color-border: var(--pl-border);
+  --color-border-strong: var(--pl-border-strong);
+
+  --color-text-primary: var(--pl-text-primary);
+  --color-text-secondary: var(--pl-text-secondary);
+  --color-text-muted: var(--pl-text-muted);
+  --color-text-inverse: var(--pl-text-inverse);
+
+  --color-accent-50: var(--pl-accent-50);
+  --color-accent-100: var(--pl-accent-100);
+  --color-accent-300: var(--pl-accent-300);
+  --color-accent-400: var(--pl-accent-400);
+  --color-accent-500: var(--pl-accent-500);
+  --color-accent-600: var(--pl-accent-600);
+  --color-accent-700: var(--pl-accent-700);
+  --color-accent-soft: var(--pl-accent-soft);
+  --color-accent-line: var(--pl-accent-line);
+  --color-on-accent: var(--pl-on-accent);
+
+  --color-bull: var(--pl-bull);
+  --color-bull-vivid: var(--pl-bull-vivid);
+  --color-bull-soft: var(--pl-bull-soft);
+  --color-bull-line: var(--pl-bull-line);
+  --color-bear: var(--pl-bear);
+  --color-bear-vivid: var(--pl-bear-vivid);
+  --color-bear-soft: var(--pl-bear-soft);
+  --color-bear-line: var(--pl-bear-line);
+  --color-danger: var(--pl-danger);
+  --color-warn: var(--pl-warn);
+  --color-warn-vivid: var(--pl-warn-vivid);
+  --color-warn-soft: var(--pl-warn-soft);
+  --color-warn-line: var(--pl-warn-line);
+  --color-info: var(--pl-info);
+  --color-info-vivid: var(--pl-info-vivid);
+  --color-info-soft: var(--pl-info-soft);
+  --color-info-line: var(--pl-info-line);
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  --shadow-sm: var(--pl-shadow-sm);
+  --shadow-md: var(--pl-shadow-md);
+  --shadow-lg: var(--pl-shadow-lg);
+
+  --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.375rem;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.9rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Semantic z-index scale. Never a bare 999. */
+:root {
+  --z-sticky: 20;
+  --z-dropdown: 40;
+  --z-drawer: 55;
+  --z-scrim: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-tooltip: 90;
+
+  --pl-topbar-h: 4.5rem;
+  --pl-tabbar-h: 4.25rem;
+  --pl-viewport-h: 100dvh;
+}
+
+@media (display-mode: standalone) {
+  :root {
+    /* iOS 26 can report an unstable dynamic viewport until the first scroll. */
+    --pl-viewport-h: 100lvh;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--pl-border);
+  }
+
+  html {
+    min-height: var(--pl-viewport-h);
+    background-color: var(--pl-app);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: var(--pl-viewport-h);
+    background-color: var(--pl-app);
+    color: var(--pl-text-primary);
+    font-size: var(--text-sm);
+    font-feature-settings: 'cv11', 'ss01';
+    font-kerning: normal;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #root {
+    min-height: var(--pl-viewport-h);
+    background-color: var(--pl-app);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--pl-accent-400);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: var(--pl-accent-soft);
+    color: var(--pl-text-primary);
+  }
+
+  /* Native controls follow the theme instead of the OS default. */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  summary {
+    touch-action: manipulation;
+  }
+
+  :where(
+    a[href],
+    button:not(:disabled),
+    [role='button']:not([aria-disabled='true']),
+    summary,
+    label[for],
+    select:not(:disabled),
+    input[type='checkbox']:not(:disabled),
+    input[type='radio']:not(:disabled),
+    input[type='button']:not(:disabled),
+    input[type='submit']:not(:disabled),
+    input[type='reset']:not(:disabled)
+  ) {
+    cursor: pointer;
+  }
+
+  :where(
+    button:disabled,
+    [role='button'][aria-disabled='true'],
+    select:disabled,
+    input:disabled
+  ) {
+    cursor: not-allowed;
+  }
+}
+
+/* Tabular numerics for every price, percentage and metric. One family,
+   figures locked to a grid so columns of numbers line up.
+   These live in @layer components so utilities still override them. */
+@layer components {
+  .pl-app-shell {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .pl-skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: var(--z-tooltip);
+    transform: translateY(-200%);
+    border-radius: var(--radius-md);
+    background: var(--pl-surface);
+    padding: 0.75rem 1rem;
+    color: var(--pl-accent-400);
+    box-shadow: var(--pl-shadow-lg);
+  }
+  .pl-skip-link:focus {
+    transform: none;
+  }
+
+  .pl-nav-link {
+    color: var(--pl-nav-text);
+  }
+  .pl-nav-link:hover,
+  .pl-nav-link[aria-current='page'] {
+    background: var(--pl-nav-hover);
+    color: var(--pl-nav-active);
+  }
+  .pl-nav-link[aria-current='page']::before {
+    position: absolute;
+    inset-block: 0.875rem;
+    left: -0.75rem;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--pl-nav-accent);
+    content: '';
+  }
+  .pl-nav-link:focus-visible {
+    outline-color: var(--pl-nav-accent);
+  }
+
+  .pl-stat-strip > * {
+    border-color: var(--pl-border);
+    border-style: solid;
+    border-width: 0;
+  }
+  .pl-stat-strip > :nth-child(even) {
+    border-left-width: 1px;
+  }
+  .pl-stat-strip > :nth-child(n + 3) {
+    border-top-width: 1px;
+  }
+  .pl-stat-strip[data-columns='3'] > :last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'zero' 1, 'cv11' 1;
+    letter-spacing: -0.005em;
+  }
+
+  /* Signed value helpers used across tables and tiles. */
+  .val-up { color: var(--pl-bull); }
+  .val-down { color: var(--pl-bear); }
+  .val-flat { color: var(--pl-text-muted); }
+}
+
+/* Quiet field behind authentication surfaces. */
+.pl-grid-bg {
+  background-color: var(--pl-surface-sunken);
+}
+
+/* Scrollbars: thin and theme-aware, but still native in behaviour. */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pl-border-strong) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--pl-border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--pl-text-muted);
+  background-clip: content-box;
+}
+
+/* Horizontal rails (mover tabs, filter chips) scroll without a bar. */
+.scroll-rail {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reserves the notch inset below an element. Note it *sets* padding-bottom
+   rather than adding to it, so only use it on elements that have none of
+   their own; otherwise add `env(safe-area-inset-bottom)` into your padding. */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Motion ----------------------------------------------------------- */
+@keyframes pl-shimmer {
+  0% { background-position: -420px 0; }
+  100% { background-position: 420px 0; }
+}
+.pl-skeleton {
+  background-color: var(--pl-surface-raised);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--pl-surface-overlay) 50%,
+    transparent 100%
+  );
+  background-size: 840px 100%;
+  background-repeat: no-repeat;
+  animation: pl-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes pl-fade-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+.pl-fade-in {
+  animation: pl-fade-in 200ms var(--ease-out-quart) both;
+}
+
+@keyframes pl-pop-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.pl-pop-in {
+  animation: pl-pop-in 150ms var(--ease-out-quart) both;
+  transform-origin: top;
+}
+
+@keyframes pl-sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+.pl-sheet-in {
+  animation: pl-sheet-in 260ms var(--ease-out-expo) both;
+}
+
+@keyframes pl-drawer-in {
+  from { transform: translateX(-100%); }
+  to { transform: none; }
+}
+.pl-drawer-in {
+  animation: pl-drawer-in 220ms var(--ease-out-expo) both;
+}
+
+@keyframes pl-right-drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.pl-right-drawer-in {
+  animation: pl-right-drawer-in 240ms var(--ease-out-expo) both;
+}
+
+@keyframes pl-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.pl-scrim-in {
+  animation: pl-scrim-in 180ms ease-out both;
+}
+
+@keyframes pl-spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: pl-spin 0.7s linear infinite;
+}
+
+/* A live-market pulse. Small, slow, and only on one dot. */
+@keyframes pl-pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  70%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.pl-pulse-ring {
+  animation: pl-pulse-ring 2.4s var(--ease-out-quart) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .pl-skeleton {
+    animation: none;
+    background-image: none;
+  }
+  .pl-fade-in,
+  .pl-pop-in,
+  .pl-sheet-in,
+  .pl-drawer-in,
+  .pl-right-drawer-in,
+  .pl-scrim-in {
+    animation: pl-scrim-in 0.01ms both;
+  }
+  .spinner {
+    animation: pl-spin 1.4s linear infinite;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Form controls. One vocabulary for every input on the surface.
+ * ------------------------------------------------------------------ */
+@layer components {
+  .input {
+    display: block;
+    width: 100%;
+    height: 2.625rem;
+    min-width: 0;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-md);
+    background-color: var(--pl-surface);
+    border: 1px solid var(--pl-border);
+    color: var(--pl-text-primary);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    transition: border-color 150ms var(--ease-out-quart), box-shadow 150ms var(--ease-out-quart),
+      background-color 150ms var(--ease-out-quart);
+  }
+  .input::placeholder {
+    color: var(--pl-text-muted);
+    opacity: 1;
+  }
+  .input:hover:not(:disabled):not(:focus) {
+    border-color: var(--pl-border-strong);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--pl-accent-500);
+    box-shadow: 0 0 0 3px var(--pl-accent-soft);
+  }
+  .input:disabled {
+    background-color: var(--pl-surface-raised);
+    color: var(--pl-text-muted);
+    cursor: not-allowed;
+  }
+  .input[aria-invalid='true'] {
+    border-color: var(--pl-bear);
+  }
+  .input[aria-invalid='true']:focus {
+    box-shadow: 0 0 0 3px var(--pl-bear-soft);
+  }
+
+  textarea.input {
+    height: auto;
+    padding: 0.625rem 0.75rem;
+    line-height: 1.5;
+  }
+
+  select.input {
+    appearance: none;
+    padding-right: 1.75rem;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 640px) {
+  .pl-stat-strip[data-columns='3'] > * {
+    border-top-width: 0;
+    border-left-width: 1px;
+  }
+  .pl-stat-strip[data-columns='3'] > :first-child {
+    border-left-width: 0;
+  }
+  .pl-stat-strip[data-columns='3'] > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pl-stat-strip[data-columns='4'] > * {
+    border-top-width: 0;
+    border-left-width: 1px;
+  }
+  .pl-stat-strip[data-columns='4'] > :first-child {
+    border-left-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --pl-topbar-h: 3.75rem;
+  }
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  /* A 16px field avoids iOS focus zoom; compact desktop overrides stay desktop-only. */
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([autocomplete='one-time-code']),
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  .input {
+    min-height: 2.75rem;
+  }
+}
+
+@media (pointer: coarse) {
+  .pl-button,
+  .pl-icon-button,
+  .pl-tab,
+  [role='menuitem'] {
+    min-height: 2.75rem;
+  }
+  .pl-icon-button {
+    min-width: 2.75rem;
+  }
+  .pl-button,
+  .pl-tab {
+    min-width: 2.75rem;
+  }
+}
+
+/* Chart host -------------------------------------------------------- */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
