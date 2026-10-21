@@ -80,6 +80,17 @@ uploads the prebuilt `dist/` directory with the deployment action's app build
 disabled. It does not rely on the deployment image to choose Node or rebuild
 the application with a different toolchain.
 
+Workflow actions are pinned to full commit SHAs with their release tags in
+comments. The SWA action currently publishes only `v1`, not numbered v1 patch
+releases. The workflow defaults to read-only repository access; deployment and
+preview-close jobs additionally allow PR comments, with no OIDC permission
+because neither job uses OIDC. Dependabot checks npm and GitHub Actions weekly
+and groups minor/patch updates within each ecosystem.
+
+Local `.env*` files are ignored, except `.env.example`. There are currently no
+tracked environment examples or templates; explicitly un-ignore any future
+tracked templates rather than committing environment credentials.
+
 ## Operating boundaries
 
 - Signals, indicators, market views, backtests, and options activity are informational. They make no performance commitment and do not execute trades.
