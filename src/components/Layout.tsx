@@ -41,7 +41,7 @@ interface NavGroup {
 
 const PUBLIC_PATHS = ['/login', '/register', '/auth/callback']
 const SIDEBAR_KEY = 'predixlab-sidebar-collapsed'
-const brandIconUrl = new URL('../../icon.svg', import.meta.url).href
+const brandIconUrl = '/icon.svg'
 
 const Wordmark: React.FC<{ compact?: boolean; descriptor?: string; inverse?: boolean; className?: string }> = ({
   compact,
