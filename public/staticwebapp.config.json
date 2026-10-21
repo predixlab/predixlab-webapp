@@ -1,0 +1,15 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [
+      "/assets/*",
+      "/images/*",
+      "/fonts/*",
+      "/icons/*",
+      "/*.{js,css,map,json,png,jpg,jpeg,gif,svg,ico,webp,avif,woff,woff2,ttf,otf,eot,webmanifest,txt,xml}"
+    ]
+  },
+  "globalHeaders": {
+    "X-Robots-Tag": "noindex"
+  }
+}
