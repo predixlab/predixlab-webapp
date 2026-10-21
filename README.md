@@ -69,11 +69,12 @@ npm run preview
 
 `build` type-checks the project and writes static assets to `dist/`. `test`
 uses Node's built-in runner and Vite's SSR loader to check vocabulary
-compatibility, API response normalization and localized badges without a live API.
+compatibility, API response normalization, localized badges and the static
+hosting policy without a live API.
 
 ## Design and deployment
 
-[DESIGN.md](DESIGN.md) documents the Dashboard's shared interface language. The Azure Static Web Apps workflow builds and publishes `dist/` from the repository root; [`staticwebapp.config.json`](staticwebapp.config.json) supplies the React Router SPA fallback. Deployment requires the Azure Static Web Apps secret referenced by the workflow and an API deployment compatible with the production client base URL.
+[DESIGN.md](DESIGN.md) documents the Dashboard's shared interface language. The Azure Static Web Apps workflow builds and publishes `dist/` from the repository root; [`public/staticwebapp.config.json`](public/staticwebapp.config.json) supplies the React Router SPA fallback and response headers. Deployment requires the Azure Static Web Apps secret referenced by the workflow and an API deployment compatible with the production client base URL.
 
 CI explicitly installs Node.js 24, runs `npm ci` and `npm run build`, then
 uploads the prebuilt `dist/` directory with the deployment action's app build
@@ -90,6 +91,34 @@ and groups minor/patch updates within each ecosystem.
 Local `.env*` files are ignored, except `.env.example`. There are currently no
 tracked environment examples or templates; explicitly un-ignore any future
 tracked templates rather than committing environment credentials.
+
+### Browser resource policy
+
+The static hosting config retains `noindex` and SPA routes while setting CSP,
+HSTS, frame denial, referrer policy and MIME-sniffing protection. The production
+resource inventory covers source, HTML, public assets, Vite configuration and
+fresh build output; there are currently no environment files to inspect.
+
+| Allowed origin/source | Purpose |
+| --- | --- |
+| `'self'` | Bundled scripts/styles, self-hosted fonts, images, manifest and PWA workers. |
+| `https://api.predixlab.com` | Production API requests. |
+| `https://www.googletagmanager.com`, `https://www.google-analytics.com`, `https://*.google-analytics.com`, `https://*.analytics.google.com` | Pre-allowed GA4 scripts and collection endpoints. |
+| `https://js.stripe.com`, `https://api.stripe.com`, `https://checkout.stripe.com`, `https://*.stripe.com`, `https://hooks.stripe.com` | Pre-allowed Stripe scripts, requests, checkout forms and frames. |
+| `https://accounts.google.com` | Pre-allowed Google sign-in scripts, requests, frames and forms. |
+| `https://login.microsoftonline.com`, `https://login.live.com` | Pre-allowed Microsoft sign-in requests and forms. |
+| `data:`, `https:`, `blob:` (images only) | Image sources; fonts remain local. |
+
+GA4 and embedded provider SDKs are not currently loaded by this app; their
+origins above are compatibility defaults. Google/Microsoft OAuth and Stripe
+checkout currently use full-page redirects, not popups or embedded SDKs.
+These navigations, portal/legal links and chart attribution links do not
+require additional CSP source origins. `https://apis.google.com` is not used.
+
+The only inline script initializes the theme before first paint. Its exact
+SHA-256 hash is allowed in `script-src`; update that hash when editing the
+script (the tests check it). No script `unsafe-inline` or `unsafe-eval` is
+allowed. Styles allow `unsafe-inline` for React/chart layout styles.
 
 ## Operating boundaries
 
