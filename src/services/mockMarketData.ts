@@ -255,7 +255,7 @@ export const mockTechnicalAnalysis = (symbol: string): TechnicalAnalysisResponse
     date: TODAY,
     quote,
     trend: mockTrend(symbol),
-    signal: score >= 0.6 ? 'strong_buy' : score >= 0.2 ? 'buy' : score <= -0.6 ? 'strong_sell' : score <= -0.2 ? 'sell' : 'neutral',
+    signal: score >= 0.6 ? 'strongly_bullish' : score >= 0.2 ? 'bullish' : score <= -0.6 ? 'strongly_bearish' : score <= -0.2 ? 'bearish' : 'neutral',
     signal_score: score,
     indicators: values,
     signals: [

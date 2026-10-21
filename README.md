@@ -30,6 +30,14 @@ Ticker charts and signal performance use only `is_index` from
 disabled until that symbol's response confirms `is_index: false`; index symbols
 show price data only.
 
+Pivot state labels and technical signal strengths accept both the legacy
+buy/sell vocabulary and the directional API vocabulary. Use
+`normalizePivotAction` / `normalizeSignalStrength` before comparing or displaying
+these values; UI labels are directional and localized. Pivot event identifiers
+and backtest trade actions are separate contracts and retain their existing
+values. Requests filter Pivot by direction/event, not by state label, so either
+API vocabulary can be deployed first.
+
 ## Run locally
 
 Use Node.js 22.12+ and npm. The GitHub repository is named `predixlab-webapp`;
@@ -54,11 +62,14 @@ Append `?mock=true` to the development URL to have the API adapter use local moc
 
 ```bash
 npm run lint
+npm test
 npm run build
 npm run preview
 ```
 
-`build` type-checks the project and writes static assets to `dist/`. The repository has no separate test script; lint and build are the available frontend validation.
+`build` type-checks the project and writes static assets to `dist/`. `test`
+uses Node's built-in runner and Vite's SSR loader to check vocabulary
+compatibility, API response normalization and localized badges without a live API.
 
 ## Design and deployment
 

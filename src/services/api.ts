@@ -87,6 +87,7 @@ import {
   ReferralValidationResponse,
   ReferralSummary,
 } from '@/types'
+import { normalizeSignalStrength } from '@/types/market'
 
 export const isUnauthorizedError = (error: unknown): boolean => {
   if (axios.isAxiosError(error)) {
@@ -663,8 +664,8 @@ class ApiClient {
 
   // Symbol analysis endpoints
   async getTechnicalAnalysis(symbol: string): Promise<TechnicalAnalysisResponse> {
-    const response = await this.client.get(`/v1/analysis/${symbol}/technical`)
-    return response.data
+    const response = await this.client.get<TechnicalAnalysisResponse>(`/v1/analysis/${symbol}/technical`)
+    return { ...response.data, signal: normalizeSignalStrength(response.data.signal) }
   }
 
   async getIndicatorSnapshot(symbol: string): Promise<IndicatorSnapshot> {
@@ -701,10 +702,16 @@ class ApiClient {
   }
 
   async getSymbolProfile(symbol: string, benchmark?: string, includePrediction = true): Promise<SymbolProfileResponse> {
-    const response = await this.client.get(`/v1/analysis/${symbol}/profile`, {
+    const response = await this.client.get<SymbolProfileResponse>(`/v1/analysis/${symbol}/profile`, {
       params: { benchmark, include_prediction: includePrediction }
     })
-    return response.data
+    return {
+      ...response.data,
+      technical: {
+        ...response.data.technical,
+        signal: normalizeSignalStrength(response.data.technical.signal),
+      },
+    }
   }
 
   async getCorrelationMatrix(symbols: string[], windowDays = 252): Promise<CorrelationResponse> {

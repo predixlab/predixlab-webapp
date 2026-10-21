@@ -81,7 +81,6 @@
     "marketClosed": "已收盘",
     "lastUpdated": "更新于",
     "predictions": "预测",
-    "dailyPicks": "每日推荐",
     "closeMenu": "关闭菜单",
     "primary": "主导航",
     "shortDashboard": "信号",
@@ -301,8 +300,6 @@
     "strategy": "策略",
     "rising": "上涨",
     "declining": "下跌",
-    "buy": "买入",
-    "sell": "卖出",
     "hold": "持有",
     "dailyPicks": "每日信号",
     "predictions": "模型输出",
@@ -892,6 +889,13 @@
       "SELL_TURN": "顶部反转",
       "TREND_BUY": "趋势信号",
       "BASE_BREAKOUT": "底部区间突破"
+    },
+    "actions": {
+      "STRONGLY_BULLISH": "强烈看涨",
+      "BULLISH": "看涨",
+      "NEUTRAL": "中性",
+      "BEARISH": "看跌",
+      "STRONGLY_BEARISH": "强烈看跌"
     },
     "kinds": {
       "reversal": "反转",

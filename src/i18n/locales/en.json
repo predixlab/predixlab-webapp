@@ -81,7 +81,6 @@
     "marketClosed": "Market closed",
     "lastUpdated": "Updated",
     "predictions": "Predictions",
-    "dailyPicks": "Daily Picks",
     "closeMenu": "Close menu",
     "primary": "Primary",
     "shortDashboard": "Signals",
@@ -301,8 +300,6 @@
     "strategy": "Strategy",
     "rising": "Bullish",
     "declining": "Bearish",
-    "buy": "Buy",
-    "sell": "Sell",
     "hold": "Hold",
     "dailyPicks": "Daily Signals",
     "predictions": "Model Output",
@@ -892,6 +889,13 @@
       "SELL_TURN": "Top reversal",
       "TREND_BUY": "Trend signal",
       "BASE_BREAKOUT": "Base breakout"
+    },
+    "actions": {
+      "STRONGLY_BULLISH": "Strongly bullish",
+      "BULLISH": "Bullish",
+      "NEUTRAL": "Neutral",
+      "BEARISH": "Bearish",
+      "STRONGLY_BEARISH": "Strongly bearish"
     },
     "kinds": {
       "reversal": "Reversal",

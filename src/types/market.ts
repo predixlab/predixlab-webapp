@@ -9,7 +9,24 @@ export type TrendDirection =
   | 'downtrend'
   | 'strong_downtrend'
 
-export type SignalStrength = 'strong_buy' | 'buy' | 'neutral' | 'sell' | 'strong_sell'
+export type SignalStrength =
+  | 'strongly_bullish'
+  | 'bullish'
+  | 'neutral'
+  | 'bearish'
+  | 'strongly_bearish'
+
+export type SignalStrengthInput = SignalStrength | 'strong_buy' | 'buy' | 'sell' | 'strong_sell'
+
+export function normalizeSignalStrength(signal: SignalStrengthInput): SignalStrength {
+  switch (signal) {
+    case 'strong_buy': return 'strongly_bullish'
+    case 'buy': return 'bullish'
+    case 'sell': return 'bearish'
+    case 'strong_sell': return 'strongly_bearish'
+    default: return signal
+  }
+}
 
 export type RiskLevel = 'low' | 'moderate' | 'high' | 'very_high'
 
@@ -170,7 +187,7 @@ export interface TechnicalAnalysisResponse {
   date?: string | null
   quote: SymbolQuote
   trend: TrendDirection
-  signal: SignalStrength
+  signal: SignalStrengthInput
   signal_score: number
   indicators: Record<string, number | null>
   signals: TechnicalSignal[]
