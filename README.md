@@ -25,6 +25,11 @@ Dashboard consumes the API; it does not collect market data or generate signals.
 
 All routes except sign-in, registration, and OAuth callbacks are protected. Feature availability and data recency remain subject to API configuration and account entitlement.
 
+Ticker charts and signal performance use only `is_index` from
+`GET /v1/stocks/data/{symbol}` to enable signals. Signal history and UI remain
+disabled until that symbol's response confirms `is_index: false`; index symbols
+show price data only.
+
 ## Run locally
 
 Use Node.js 22.12+ and npm. The GitHub repository is named `predixlab-webapp`;

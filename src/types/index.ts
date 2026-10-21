@@ -148,6 +148,7 @@ export interface StockData {
 
 export interface StockDataResponse {
   symbol: string
+  is_index: boolean
   data: StockData[]
   total_records: number
 }

@@ -2477,6 +2477,11 @@
                         "type": "string",
                         "title": "Symbol"
                     },
+                    "is_index": {
+                        "type": "boolean",
+                        "title": "Is Index",
+                        "description": "Whether the symbol is in the configured US_REFERENCE_SYMBOLS list (case-insensitive)."
+                    },
                     "data": {
                         "items": {
                             "$ref": "#/components/schemas/StockData"
@@ -2492,6 +2497,7 @@
                 "type": "object",
                 "required": [
                     "symbol",
+                    "is_index",
                     "data",
                     "total_records"
                 ],

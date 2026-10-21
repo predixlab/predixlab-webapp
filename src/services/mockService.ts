@@ -367,6 +367,8 @@ export class MockService {
 
     return {
       symbol,
+      // Simulate the API's default US_REFERENCE_SYMBOLS classification.
+      is_index: ['SPY', 'QQQ', 'IWM', 'DIA'].includes(symbol.trim().toUpperCase()),
       data,
       total_records: data.length
     }

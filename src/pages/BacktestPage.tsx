@@ -22,7 +22,7 @@ import {
 } from '@/components/ui'
 import type { Column } from '@/components/ui'
 import { api } from '@/services/apiAdapter'
-import type { AlphaRankItem, PivotPick, SignalData, StockData } from '@/types'
+import type { AlphaRankItem, PivotPick, SignalData, StockDataResponse } from '@/types'
 import { cn, formatDay } from '@/utils'
 
 const MARKET = 'us'
@@ -92,7 +92,6 @@ const BacktestPage: React.FC = () => {
   ).toUpperCase()
   const selectedModel: SignalModel =
     searchParams.get('model') === 'alpharank' ? 'alpharank' : 'pivot'
-
   const [searchQuery, setSearchQuery] = useState(selectedTicker)
   const [searchResults, setSearchResults] = useState<string[]>([])
   const [searchOpen, setSearchOpen] = useState(false)
@@ -102,7 +101,10 @@ const BacktestPage: React.FC = () => {
   const [history, setHistory] = useState<SignalHistoryItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [historyError, setHistoryError] = useState(false)
-  const [stockData, setStockData] = useState<StockData[]>([])
+  const [stockResult, setStockResult] = useState<{
+    symbol: string
+    response: StockDataResponse
+  } | null>(null)
   const [chartLoading, setChartLoading] = useState(false)
   const [chartError, setChartError] = useState(false)
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('1Y')
@@ -111,6 +113,11 @@ const BacktestPage: React.FC = () => {
   const searchListRef = useRef<HTMLUListElement>(null)
   const searchListId = React.useId()
   const historyCacheRef = useRef<Map<string, HistoryCacheEntry>>(new Map())
+
+  const stockResponse = stockResult?.symbol === selectedTicker ? stockResult.response : null
+  const stockData = useMemo(() => stockResponse?.data ?? [], [stockResponse])
+  const isIndex = stockResponse?.is_index
+  const signalsEnabled = isIndex === false
 
   useEffect(() => setSearchQuery(selectedTicker), [selectedTicker])
 
@@ -160,8 +167,10 @@ const BacktestPage: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (!selectedTicker) {
+    if (!selectedTicker || !signalsEnabled) {
       setHistory([])
+      setHistoryLoading(false)
+      setHistoryError(false)
       return
     }
     let cancelled = false
@@ -199,15 +208,17 @@ const BacktestPage: React.FC = () => {
     return () => {
       cancelled = true
     }
-  }, [selectedModel, selectedTicker])
+  }, [selectedModel, selectedTicker, signalsEnabled])
 
   useEffect(() => {
     if (!selectedTicker) {
-      setStockData([])
+      setStockResult(null)
       return
     }
     let cancelled = false
     const load = async () => {
+      // Preserve the current symbol's flag while loading another price range.
+      setStockResult(current => current?.symbol === selectedTicker ? current : null)
       setChartLoading(true)
       setChartError(false)
       try {
@@ -217,10 +228,10 @@ const BacktestPage: React.FC = () => {
           undefined,
           chartPeriod.toLowerCase(),
         )
-        if (!cancelled) setStockData(response.data ?? [])
+        if (!cancelled) setStockResult({ symbol: selectedTicker, response })
       } catch {
         if (!cancelled) {
-          setStockData([])
+          setStockResult(null)
           setChartError(true)
         }
       } finally {
@@ -243,12 +254,12 @@ const BacktestPage: React.FC = () => {
   }, [stockData])
 
   const rangeHistory = useMemo(() => {
-    if (!range) return []
+    if (!range || !signalsEnabled) return []
     return history.filter(item => {
       const day = item.date.split('T')[0]
       return day >= range.from && day <= range.to
     })
-  }, [history, range])
+  }, [history, range, signalsEnabled])
 
   const signals: SignalData[] = useMemo(
     () =>
@@ -381,7 +392,10 @@ const BacktestPage: React.FC = () => {
       <PageHeader title={t('performance.title')} subtitle={t('performance.subtitle')} />
 
       <Panel flush className="overflow-visible">
-        <div className="grid items-start gap-5 p-4 sm:p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className={cn(
+          'grid items-start gap-5 p-4 sm:p-5',
+          signalsEnabled && 'md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]',
+        )}>
           <div
             ref={searchRef}
             className="relative min-w-0"
@@ -483,24 +497,28 @@ const BacktestPage: React.FC = () => {
               </div>
             ) : null}
           </div>
-          <div className="min-w-0">
-            <p className="mb-1.5 text-xs font-medium text-text-secondary">{t('performance.modelControl')}</p>
-            <Tabs
-              value={selectedModel}
-              onChange={selectModel}
-              fullWidth
-              aria-label={t('performance.modelControl')}
-              items={[
-                { value: 'pivot' as const, label: t('performance.models.pivot.label') },
-                { value: 'alpharank' as const, label: t('performance.models.alpharank.label') },
-              ]}
-            />
-          </div>
+          {signalsEnabled ? (
+            <div className="min-w-0">
+              <p className="mb-1.5 text-xs font-medium text-text-secondary">{t('performance.modelControl')}</p>
+              <Tabs
+                value={selectedModel}
+                onChange={selectModel}
+                fullWidth
+                aria-label={t('performance.modelControl')}
+                items={[
+                  { value: 'pivot' as const, label: t('performance.models.pivot.label') },
+                  { value: 'alpharank' as const, label: t('performance.models.alpharank.label') },
+                ]}
+              />
+            </div>
+          ) : null}
         </div>
-        <p className="flex items-start gap-2 rounded-b-lg border-t border-border bg-surface-raised/60 px-4 py-3 text-xs leading-5 text-text-muted sm:px-5">
-          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-          {t('performance.commandHint')}
-        </p>
+        {signalsEnabled ? (
+          <p className="flex items-start gap-2 rounded-b-lg border-t border-border bg-surface-raised/60 px-4 py-3 text-xs leading-5 text-text-muted sm:px-5">
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+            {t('performance.commandHint')}
+          </p>
+        ) : null}
       </Panel>
 
       {!selectedTicker ? (
@@ -527,9 +545,9 @@ const BacktestPage: React.FC = () => {
         </Panel>
       ) : (
         <>
-          {historyLoading || chartLoading ? (
+          {signalsEnabled && (historyLoading || chartLoading) ? (
             <Skeleton height={154} />
-          ) : symbolStats && !historyError && !chartError ? (
+          ) : signalsEnabled && symbolStats && !historyError && !chartError ? (
             <section aria-labelledby="signal-performance-summary">
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <h2 id="signal-performance-summary" className="text-sm font-semibold text-text-primary">
@@ -553,9 +571,10 @@ const BacktestPage: React.FC = () => {
           <Panel
             title={<span className="num text-lg">{selectedTicker}</span>}
             subtitle={
-              range
-                ? `${modelLabel} · ${t('stocks.rangeLabel', { from: range.from, to: range.to })}`
-                : modelLabel
+              [
+                signalsEnabled ? modelLabel : null,
+                range ? t('stocks.rangeLabel', { from: range.from, to: range.to }) : null,
+              ].filter(Boolean).join(' · ')
             }
             icon={<LineChart className="h-4 w-4" />}
             aria-busy={chartLoading}
@@ -580,12 +599,12 @@ const BacktestPage: React.FC = () => {
                 tone="error"
                 icon={<LineChart className="h-4 w-4" />}
                 title={t('stocks.errorFetchingData')}
-                description={t('performance.commandHint')}
               />
             ) : stockData.length > 0 ? (
               <CandlestickChart
                 data={stockData}
-                signals={signals}
+                signals={signalsEnabled ? signals : undefined}
+                showSignalLegend={signalsEnabled}
                 symbol={selectedTicker}
                 period={chartPeriod}
                 onPeriodChange={setChartPeriod}
@@ -601,104 +620,108 @@ const BacktestPage: React.FC = () => {
             )}
           </Panel>
 
-          <Panel
-            flush
-            title={t('performance.modelHistory', { model: modelLabel })}
-            icon={<BarChart3 className="h-4 w-4" />}
-            aria-busy={historyLoading || chartLoading}
-            actions={
-              historyLoading || chartLoading ? (
-                <span className="text-xs text-text-muted">{t('common.loading')}</span>
-              ) : !historyError && !chartError && rangeHistory.length > 0 ? (
-                <Badge tone="muted" className="num">
-                  {t('performance.signalRows', { count: rangeHistory.length })}
-                </Badge>
-              ) : null
-            }
-          >
-            <DataTable
-              data={rangeHistory}
-              columns={columns}
-              rowKey={item =>
-                isAlphaRankItem(item)
-                  ? `${item.date}-${item.rank}`
-                  : `${item.date}-${item.event}`
+          {signalsEnabled ? (
+            <Panel
+              flush
+              title={t('performance.modelHistory', { model: modelLabel })}
+              icon={<BarChart3 className="h-4 w-4" />}
+              aria-busy={historyLoading || chartLoading}
+              actions={
+                historyLoading || chartLoading ? (
+                  <span className="text-xs text-text-muted">{t('common.loading')}</span>
+                ) : !historyError && !chartError && rangeHistory.length > 0 ? (
+                  <Badge tone="muted" className="num">
+                    {t('performance.signalRows', { count: rangeHistory.length })}
+                  </Badge>
+                ) : null
               }
-              loading={historyLoading || chartLoading}
-              dense
-              className="md:max-h-[32rem]"
-              renderMobileRow={item => (
-                <div className="space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="num text-sm font-semibold text-text-primary">{formatDay(item.date)}</p>
-                    {item.path_complete === false ? (
-                      <Badge tone="muted" size="sm">{t('performance.stillOpen')}</Badge>
-                    ) : null}
+            >
+              <DataTable
+                data={rangeHistory}
+                columns={columns}
+                rowKey={item =>
+                  isAlphaRankItem(item)
+                    ? `${item.date}-${item.rank}`
+                    : `${item.date}-${item.event}`
+                }
+                loading={historyLoading || chartLoading}
+                dense
+                className="md:max-h-[32rem]"
+                renderMobileRow={item => (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="num text-sm font-semibold text-text-primary">{formatDay(item.date)}</p>
+                      {item.path_complete === false ? (
+                        <Badge tone="muted" size="sm">{t('performance.stillOpen')}</Badge>
+                      ) : null}
+                    </div>
+                    <SignalLabel item={item} t={t} />
+                    <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-3">
+                      <div className="col-span-2 flex items-baseline justify-between gap-3">
+                        <dt className="text-xs text-text-muted">{t('performance.columns.signalPrice')}</dt>
+                        <dd className="num text-sm font-medium text-text-primary">
+                          {signalPrice(item)?.toFixed(2) ?? '—'}
+                        </dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="mb-1 flex items-center gap-1 text-xs text-text-muted">
+                          <ArrowUp className="h-3 w-3 text-bull" aria-hidden />
+                          {t('performance.columns.peak')}
+                        </dt>
+                        <dd className="text-sm">
+                          <PathValue value={item.max_gain} day={item.days_to_max_gain} tone="bull" t={t} />
+                        </dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="mb-1 flex items-center gap-1 text-xs text-text-muted">
+                          <ArrowDown className="h-3 w-3 text-bear" aria-hidden />
+                          {t('performance.columns.trough')}
+                        </dt>
+                        <dd className="text-sm">
+                          <PathValue value={item.max_loss} day={item.days_to_max_loss} tone="bear" t={t} />
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
-                  <SignalLabel item={item} t={t} />
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-3">
-                    <div className="col-span-2 flex items-baseline justify-between gap-3">
-                      <dt className="text-xs text-text-muted">{t('performance.columns.signalPrice')}</dt>
-                      <dd className="num text-sm font-medium text-text-primary">
-                        {signalPrice(item)?.toFixed(2) ?? '—'}
-                      </dd>
-                    </div>
-                    <div className="min-w-0">
-                      <dt className="mb-1 flex items-center gap-1 text-xs text-text-muted">
-                        <ArrowUp className="h-3 w-3 text-bull" aria-hidden />
-                        {t('performance.columns.peak')}
-                      </dt>
-                      <dd className="text-sm">
-                        <PathValue value={item.max_gain} day={item.days_to_max_gain} tone="bull" t={t} />
-                      </dd>
-                    </div>
-                    <div className="min-w-0">
-                      <dt className="mb-1 flex items-center gap-1 text-xs text-text-muted">
-                        <ArrowDown className="h-3 w-3 text-bear" aria-hidden />
-                        {t('performance.columns.trough')}
-                      </dt>
-                      <dd className="text-sm">
-                        <PathValue value={item.max_loss} day={item.days_to_max_loss} tone="bear" t={t} />
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-              )}
-              empty={
-                <EmptyState
-                  tone={historyError || chartError ? 'error' : undefined}
-                  icon={<BarChart3 className="h-4 w-4" />}
-                  title={
-                    historyError
-                      ? t('performance.historyError', { model: modelLabel })
-                      : chartError
-                        ? t('stocks.errorFetchingData')
-                        : history.length
-                          ? t('performance.noSignalsInRangeTitle', { model: modelLabel })
-                          : t(`performance.models.${selectedModel}.noSignals`, { ticker: selectedTicker })
-                  }
-                  description={
-                    historyError
-                      ? undefined
-                      : chartError
-                        ? t('performance.commandHint')
-                        : history.length
-                          ? t('performance.noSignalsInRange', { model: modelLabel })
-                          : t(`performance.models.${selectedModel}.noSignalsHint`)
-                  }
-                />
-              }
-            />
-          </Panel>
+                )}
+                empty={
+                  <EmptyState
+                    tone={historyError || chartError ? 'error' : undefined}
+                    icon={<BarChart3 className="h-4 w-4" />}
+                    title={
+                      historyError
+                        ? t('performance.historyError', { model: modelLabel })
+                        : chartError
+                          ? t('stocks.errorFetchingData')
+                          : history.length
+                            ? t('performance.noSignalsInRangeTitle', { model: modelLabel })
+                            : t(`performance.models.${selectedModel}.noSignals`, { ticker: selectedTicker })
+                    }
+                    description={
+                      historyError
+                        ? undefined
+                        : chartError
+                          ? t('performance.commandHint')
+                          : history.length
+                            ? t('performance.noSignalsInRange', { model: modelLabel })
+                            : t(`performance.models.${selectedModel}.noSignalsHint`)
+                    }
+                  />
+                }
+              />
+            </Panel>
+          ) : null}
         </>
       )}
 
-      <div className="flex items-start gap-2.5 border-t border-border pt-4">
-        <Info className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" aria-hidden />
-        <p className="max-w-5xl text-xs leading-6 text-text-muted">
-          {t(`performance.disclaimers.${selectedModel}`, { horizon })}
-        </p>
-      </div>
+      {signalsEnabled ? (
+        <div className="flex items-start gap-2.5 border-t border-border pt-4">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" aria-hidden />
+          <p className="max-w-5xl text-xs leading-6 text-text-muted">
+            {t(`performance.disclaimers.${selectedModel}`, { horizon })}
+          </p>
+        </div>
+      ) : null}
     </Page>
   )
 }

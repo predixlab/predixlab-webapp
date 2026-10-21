@@ -7,7 +7,7 @@ import CandlestickChart from '@/components/CandlestickChart'
 import type { ChartPeriod } from '@/components/chartPeriods'
 import { Button, EmptyState, Modal, Skeleton } from '@/components/ui'
 import { api } from '@/services/apiAdapter'
-import type { AlphaRankItem, PivotPick, SignalData, StockData } from '@/types'
+import type { AlphaRankItem, PivotPick, SignalData, StockDataResponse } from '@/types'
 import { cn } from '@/utils'
 
 const CACHE_TTL_MS = 5 * 60 * 1000
@@ -19,7 +19,7 @@ export type TickerSignalModel = 'alpharank' | 'pivot'
 type CacheEntry<T> = { data: T; ts: number }
 
 // Shared across every page so reopening a ticker elsewhere is instant.
-const stockDataCache = new Map<string, CacheEntry<StockData[]>>()
+const stockDataCache = new Map<string, CacheEntry<StockDataResponse>>()
 const pivotHistoryCache = new Map<string, CacheEntry<PivotPick[]>>()
 const alphaHistoryCache = new Map<string, CacheEntry<AlphaRankItem[]>>()
 
@@ -49,7 +49,7 @@ interface TickerChartDrawerProps {
 }
 
 /**
- * Price history with AlphaRank and Pivot signal markers for a single ticker.
+ * Price history with AlphaRank and Pivot signal markers for non-index tickers.
  * Right drawer on desktop, bottom sheet on phones.
  */
 const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
@@ -61,38 +61,50 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   const location = useLocation()
   const navigate = useNavigate()
   const isDesktop = useIsDesktop()
-
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('3M')
-  const [stockData, setStockData] = useState<StockData[]>([])
+  const [stockResult, setStockResult] = useState<{
+    symbol: string
+    response: StockDataResponse
+  } | null>(null)
   const [chartLoading, setChartLoading] = useState(false)
   const [chartError, setChartError] = useState<string | null>(null)
   const [pivotHistory, setPivotHistory] = useState<PivotPick[]>([])
   const [alphaHistory, setAlphaHistory] = useState<AlphaRankItem[]>([])
 
+  const stockResponse = stockResult?.symbol === symbol ? stockResult.response : null
+  const stockData = stockResponse?.data ?? []
+  const isIndex = stockResponse?.is_index
+  const signalsEnabled = isIndex === false
+
   useEffect(() => {
-    if (!symbol) return
+    if (!symbol) {
+      setStockResult(null)
+      return
+    }
     let cancelled = false
     const cacheKey = `${symbol}_${chartPeriod}`
     const cached = stockDataCache.get(cacheKey)
     if (fresh(cached)) {
-      setStockData(cached.data)
+      setStockResult({ symbol, response: cached.data })
       setChartError(null)
       setChartLoading(false)
       return
     }
 
-    setStockData([])
+    // Keep a known flag for same-symbol period loads without restarting signals.
+    setStockResult(current => current?.symbol === symbol ? current : null)
     setChartLoading(true)
     setChartError(null)
     api
       .getStockData(symbol, undefined, undefined, chartPeriod.toLowerCase())
       .then(response => {
         if (cancelled) return
-        stockDataCache.set(cacheKey, { data: response.data, ts: Date.now() })
-        setStockData(response.data)
+        stockDataCache.set(cacheKey, { data: response, ts: Date.now() })
+        setStockResult({ symbol, response })
       })
       .catch(err => {
         if (cancelled) return
+        setStockResult(null)
         setChartError(t('dashboard.errorLoadingChart'))
         // eslint-disable-next-line no-console
         console.error('Error fetching stock data:', err)
@@ -106,7 +118,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   }, [symbol, chartPeriod, t])
 
   useEffect(() => {
-    if (!symbol) {
+    if (!symbol || !signalsEnabled) {
       setPivotHistory([])
       setAlphaHistory([])
       return
@@ -144,7 +156,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
     return () => {
       cancelled = true
     }
-  }, [symbol])
+  }, [symbol, signalsEnabled])
 
   const chartSignals: SignalData[] = useMemo(
     () =>
@@ -167,7 +179,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   )
 
   const handleBacktest = () => {
-    if (!symbol) return
+    if (!symbol || !signalsEnabled) return
     const params = new URLSearchParams(location.search)
     params.set('ticker', symbol)
     params.set('model', backtestModel)
@@ -209,7 +221,8 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
         onPeriodChange={setChartPeriod}
         isMobile={mobile}
         fill={!mobile}
-        signals={chartSignals}
+        signals={signalsEnabled ? chartSignals : undefined}
+        showSignalLegend={signalsEnabled}
       />
     )
   }
@@ -224,14 +237,16 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
       presentation={isDesktop ? 'right-drawer' : 'dialog'}
       bodyClassName={isDesktop ? 'flex flex-col overflow-hidden' : undefined}
       footer={
-        <Button
-          fullWidth
-          variant="secondary"
-          onClick={handleBacktest}
-          leftIcon={<Activity className="h-4 w-4" />}
-        >
-          {t('stocks.backtest')}
-        </Button>
+        signalsEnabled ? (
+          <Button
+            fullWidth
+            variant="secondary"
+            onClick={handleBacktest}
+            leftIcon={<Activity className="h-4 w-4" />}
+          >
+            {t('stocks.backtest')}
+          </Button>
+        ) : undefined
       }
     >
       <p className="sr-only" aria-live="polite">
