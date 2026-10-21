@@ -10,10 +10,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'PredixLab - Quantization and AI Stock Analysis',
+        name: 'PredixLab Dashboard',
         short_name: 'PredixLab',
         description:
-          'Track pivot signals, market breadth, and unusual options flow across the US equity universe.',
+          'Sign in to view PredixLab market overview, screener, daily signals, and options activity. Built on daily data. Not investment advice.',
         theme_color: '#f4f5f2',
         background_color: '#f4f5f2',
         display: 'standalone',
