@@ -23,7 +23,7 @@ import {
 import type { Column } from '@/components/ui'
 import { api } from '@/services/apiAdapter'
 import type { AlphaRankItem, PivotPick, SignalData, StockData } from '@/types'
-import { cn, formatDay } from '@/utils'
+import { cn, formatDay, isIndexSymbol } from '@/utils'
 
 const MARKET = 'us'
 const CACHE_TTL_MS = 5 * 60 * 1000
@@ -92,6 +92,7 @@ const BacktestPage: React.FC = () => {
   ).toUpperCase()
   const selectedModel: SignalModel =
     searchParams.get('model') === 'alpharank' ? 'alpharank' : 'pivot'
+  const isIndex = isIndexSymbol(selectedTicker)
 
   const [searchQuery, setSearchQuery] = useState(selectedTicker)
   const [searchResults, setSearchResults] = useState<string[]>([])
@@ -160,8 +161,10 @@ const BacktestPage: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (!selectedTicker) {
+    if (!selectedTicker || isIndex) {
       setHistory([])
+      setHistoryLoading(false)
+      setHistoryError(false)
       return
     }
     let cancelled = false
@@ -199,7 +202,7 @@ const BacktestPage: React.FC = () => {
     return () => {
       cancelled = true
     }
-  }, [selectedModel, selectedTicker])
+  }, [selectedModel, selectedTicker, isIndex])
 
   useEffect(() => {
     if (!selectedTicker) {
@@ -243,12 +246,12 @@ const BacktestPage: React.FC = () => {
   }, [stockData])
 
   const rangeHistory = useMemo(() => {
-    if (!range) return []
+    if (!range || isIndex) return []
     return history.filter(item => {
       const day = item.date.split('T')[0]
       return day >= range.from && day <= range.to
     })
-  }, [history, range])
+  }, [history, range, isIndex])
 
   const signals: SignalData[] = useMemo(
     () =>

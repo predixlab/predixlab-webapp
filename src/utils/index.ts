@@ -1,6 +1,12 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+const INDEX_SYMBOLS = new Set(['SPY', 'QQQ', 'IWM', 'DIA', '^GSPC'])
+
+export function isIndexSymbol(symbol: string): boolean {
+  return INDEX_SYMBOLS.has(symbol.trim().toUpperCase())
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

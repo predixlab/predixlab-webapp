@@ -8,7 +8,7 @@ import type { ChartPeriod } from '@/components/chartPeriods'
 import { Button, EmptyState, Modal, Skeleton } from '@/components/ui'
 import { api } from '@/services/apiAdapter'
 import type { AlphaRankItem, PivotPick, SignalData, StockData } from '@/types'
-import { cn } from '@/utils'
+import { cn, isIndexSymbol } from '@/utils'
 
 const CACHE_TTL_MS = 5 * 60 * 1000
 const MARKET = 'us'
@@ -49,7 +49,7 @@ interface TickerChartDrawerProps {
 }
 
 /**
- * Price history with AlphaRank and Pivot signal markers for a single ticker.
+ * Price history with AlphaRank and Pivot signal markers for non-index tickers.
  * Right drawer on desktop, bottom sheet on phones.
  */
 const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
@@ -61,6 +61,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   const location = useLocation()
   const navigate = useNavigate()
   const isDesktop = useIsDesktop()
+  const isIndex = isIndexSymbol(symbol ?? '')
 
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('3M')
   const [stockData, setStockData] = useState<StockData[]>([])
@@ -106,7 +107,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   }, [symbol, chartPeriod, t])
 
   useEffect(() => {
-    if (!symbol) {
+    if (!symbol || isIndex) {
       setPivotHistory([])
       setAlphaHistory([])
       return
@@ -144,7 +145,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
     return () => {
       cancelled = true
     }
-  }, [symbol])
+  }, [symbol, isIndex])
 
   const chartSignals: SignalData[] = useMemo(
     () =>
@@ -167,7 +168,7 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
   )
 
   const handleBacktest = () => {
-    if (!symbol) return
+    if (!symbol || isIndex) return
     const params = new URLSearchParams(location.search)
     params.set('ticker', symbol)
     params.set('model', backtestModel)
@@ -209,7 +210,8 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
         onPeriodChange={setChartPeriod}
         isMobile={mobile}
         fill={!mobile}
-        signals={chartSignals}
+        signals={isIndex ? undefined : chartSignals}
+        showSignalLegend={!isIndex}
       />
     )
   }
@@ -224,14 +226,16 @@ const TickerChartDrawer: React.FC<TickerChartDrawerProps> = ({
       presentation={isDesktop ? 'right-drawer' : 'dialog'}
       bodyClassName={isDesktop ? 'flex flex-col overflow-hidden' : undefined}
       footer={
-        <Button
-          fullWidth
-          variant="secondary"
-          onClick={handleBacktest}
-          leftIcon={<Activity className="h-4 w-4" />}
-        >
-          {t('stocks.backtest')}
-        </Button>
+        !isIndex ? (
+          <Button
+            fullWidth
+            variant="secondary"
+            onClick={handleBacktest}
+            leftIcon={<Activity className="h-4 w-4" />}
+          >
+            {t('stocks.backtest')}
+          </Button>
+        ) : undefined
       }
     >
       <p className="sr-only" aria-live="polite">

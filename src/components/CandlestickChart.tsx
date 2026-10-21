@@ -37,6 +37,7 @@ interface CandlestickChartProps {
   onPeriodChange: (period: ChartPeriod) => void
   isMobile?: boolean
   signals?: SignalData[]
+  showSignalLegend?: boolean
   shouldShowPeriod?: boolean
   showSymbol?: boolean
   /** Grows to fill the parent instead of using a fixed height. */
@@ -237,6 +238,7 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({
   onPeriodChange,
   isMobile = false,
   signals = [],
+  showSignalLegend = true,
   shouldShowPeriod = true,
   showSymbol = true,
   fill = false,
@@ -470,39 +472,41 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({
         ) : null}
       </div>
 
-      <div
-        className="mb-3 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 text-2xs text-text-muted"
-        role="list"
-        aria-label={t('chart.signalLegend.label')}
-      >
-        <span className="flex items-center gap-1.5" role="listitem">
-          <span className="flex items-center gap-0.5" aria-hidden>
-            <span className="h-2.5 w-2.5 rounded-full bg-accent-500" />
-            <span className="text-[9px] font-semibold text-accent-400">A</span>
+      {showSignalLegend && (
+        <div
+          className="mb-3 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 text-2xs text-text-muted"
+          role="list"
+          aria-label={t('chart.signalLegend.label')}
+        >
+          <span className="flex items-center gap-1.5" role="listitem">
+            <span className="flex items-center gap-0.5" aria-hidden>
+              <span className="h-2.5 w-2.5 rounded-full bg-accent-500" />
+              <span className="text-[9px] font-semibold text-accent-400">A</span>
+            </span>
+            {t('chart.signalLegend.alpharank')}
           </span>
-          {t('chart.signalLegend.alpharank')}
-        </span>
-        <span className="flex items-center gap-1.5" role="listitem">
-          <svg
-            viewBox="0 0 16 16"
-            className="h-3.5 w-3.5 fill-bull-vivid"
-            aria-hidden="true"
-          >
-            <path d="M1 8 8 1l7 7h-4v7H5V8H1Z" />
-          </svg>
-          {t('chart.signalLegend.pivotBullish')}
-        </span>
-        <span className="flex items-center gap-1.5" role="listitem">
-          <svg
-            viewBox="0 0 16 16"
-            className="h-3.5 w-3.5 fill-bear-vivid"
-            aria-hidden="true"
-          >
-            <path d="M1 8h4V1h6v7h4l-7 7-7-7Z" />
-          </svg>
-          {t('chart.signalLegend.pivotBearish')}
-        </span>
-      </div>
+          <span className="flex items-center gap-1.5" role="listitem">
+            <svg
+              viewBox="0 0 16 16"
+              className="h-3.5 w-3.5 fill-bull-vivid"
+              aria-hidden="true"
+            >
+              <path d="M1 8 8 1l7 7h-4v7H5V8H1Z" />
+            </svg>
+            {t('chart.signalLegend.pivotBullish')}
+          </span>
+          <span className="flex items-center gap-1.5" role="listitem">
+            <svg
+              viewBox="0 0 16 16"
+              className="h-3.5 w-3.5 fill-bear-vivid"
+              aria-hidden="true"
+            >
+              <path d="M1 8h4V1h6v7h4l-7 7-7-7Z" />
+            </svg>
+            {t('chart.signalLegend.pivotBearish')}
+          </span>
+        </div>
+      )}
 
       <div
         ref={chartContainerRef}

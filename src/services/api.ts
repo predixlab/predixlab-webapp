@@ -552,7 +552,7 @@ class ApiClient {
   }
 
   async getStockData(symbol: string, startDate?: string, endDate?: string, period?: string): Promise<StockDataResponse> {
-    const response = await this.client.get(`/v1/stocks/data/${symbol}`, {
+    const response = await this.client.get(`/v1/stocks/data/${encodeURIComponent(symbol)}`, {
       params: {
         start_date: startDate,
         end_date: endDate,
