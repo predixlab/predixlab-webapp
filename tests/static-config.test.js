@@ -20,6 +20,7 @@ test('static hosting retains SPA routing and noindex alongside the response head
   assert.equal(headers['X-Frame-Options'], 'DENY')
   assert.equal(headers['Referrer-Policy'], 'strict-origin-when-cross-origin')
   assert.equal(headers['X-Content-Type-Options'], 'nosniff')
+  assert.equal(headers['Permissions-Policy'], 'camera=(), microphone=(), geolocation=()')
 })
 
 test('CSP hashes every inline script without allowing arbitrary inline scripts or eval', () => {
@@ -34,45 +35,25 @@ test('CSP hashes every inline script without allowing arbitrary inline scripts o
   assert.ok(!policy.includes("'unsafe-eval'"))
 })
 
-test('CSP keeps local assets and PWA workers, denies embedding and allows integration defaults', () => {
+test('CSP allows used assets and API requests without unused provider scripts, connections or frames', () => {
   for (const name of ['default-src', 'font-src', 'worker-src', 'base-uri']) {
     assert.deepEqual(directives.get(name), ["'self'"])
   }
-  for (const name of ['object-src', 'frame-ancestors']) {
+  for (const name of ['object-src', 'frame-src', 'frame-ancestors']) {
     assert.deepEqual(directives.get(name), ["'none'"])
   }
   assert.deepEqual(directives.get('style-src'), ["'self'", "'unsafe-inline'"])
-  assert.deepEqual(directives.get('img-src'), ["'self'", 'data:', 'https:', 'blob:'])
-  const requiredSources = {
-    'script-src': [
-      "'self'",
-      'https://www.googletagmanager.com',
-      'https://www.google-analytics.com',
-      'https://js.stripe.com',
-      'https://accounts.google.com',
-    ],
-    'connect-src': [
-      "'self'",
-      'https://api.predixlab.com',
-      'https://www.googletagmanager.com',
-      'https://www.google-analytics.com',
-      'https://*.google-analytics.com',
-      'https://*.analytics.google.com',
-      'https://api.stripe.com',
-      'https://accounts.google.com',
-      'https://login.microsoftonline.com',
-      'https://login.live.com',
-    ],
-    'frame-src': ['https://*.stripe.com', 'https://hooks.stripe.com', 'https://accounts.google.com'],
-    'form-action': [
-      "'self'",
-      'https://checkout.stripe.com',
-      'https://accounts.google.com',
-      'https://login.microsoftonline.com',
-      'https://login.live.com',
-    ],
-  }
-  for (const [name, sources] of Object.entries(requiredSources)) {
-    for (const source of sources) assert.ok(directives.get(name).includes(source), `${name} must allow ${source}`)
-  }
+  assert.deepEqual(directives.get('img-src'), ["'self'", 'data:'])
+  assert.deepEqual(directives.get('script-src').filter(source => !source.startsWith("'sha256-")), ["'self'"])
+  assert.deepEqual(directives.get('connect-src'), ["'self'", 'https://api.predixlab.com'])
+})
+
+test('CSP retains OAuth and Stripe form targets for redirect-based integrations', () => {
+  assert.deepEqual(directives.get('form-action'), [
+    "'self'",
+    'https://checkout.stripe.com',
+    'https://accounts.google.com',
+    'https://login.microsoftonline.com',
+    'https://login.live.com',
+  ])
 })

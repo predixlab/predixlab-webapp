@@ -59,6 +59,30 @@ const renderBadge = props => renderToStaticMarkup(
   React.createElement(I18nextProvider, { i18n }, React.createElement(ActionBadge, props)),
 )
 
+test('signal context uses neutral states, scores and bearish wording in both languages', () => {
+  for (const [language, bullish, bearish, neutral, score, rowLabel, bearishSignal] of [
+    ['en', 'Bullish', 'Bearish', 'Neutral', 'Score', 'Rank 1, TEST, score 85%', 'bearish signal'],
+    ['zh', '看涨', '看跌', '中性', '评分', '排名 1，TEST，评分 85%', '看跌信号'],
+  ]) {
+    const t = i18n.getFixedT(language)
+    for (const [key, label] of [
+      ['dashboard.risingStocks', bullish],
+      ['dashboard.fallingStocks', bearish],
+      ['stocks.rising', bullish],
+      ['stocks.declining', bearish],
+      ['stocks.hold', neutral],
+      ['picks.bullish', bullish],
+      ['picks.bearish', bearish],
+      ['picks.confidence', score],
+    ]) {
+      assert.equal(t(key), label)
+    }
+    assert.equal(t('picks.rowAria', { rank: 1, symbol: 'TEST', confidence: '85%' }), rowLabel)
+    assert.ok(t('dashboard.modelInfo.pivot.howToRead').includes(score))
+    assert.ok(t('performance.disclaimer', { horizon: 10 }).includes(bearishSignal))
+  }
+})
+
 test('old and new actions render identical directional labels, tones and emphasis in both languages', async () => {
   for (const language of ['en', 'zh']) {
     await i18n.changeLanguage(language)

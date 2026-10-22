@@ -36,7 +36,10 @@ buy/sell vocabulary and the directional API vocabulary. Use
 these values; UI labels are directional and localized. Pivot event identifiers
 and backtest trade actions are separate contracts and retain their existing
 values. Requests filter Pivot by direction/event, not by state label, so either
-API vocabulary can be deployed first.
+API vocabulary can be deployed first. Signal states display as
+bullish/bearish/neutral (看涨/看跌/中性). Pivot's relative signal strength is
+labelled Score (评分), not a success probability; translation keys and API fields
+retain their existing names.
 
 ## Run locally
 
@@ -76,17 +79,20 @@ hosting policy without a live API.
 
 [DESIGN.md](DESIGN.md) documents the Dashboard's shared interface language. The Azure Static Web Apps workflow builds and publishes `dist/` from the repository root; [`public/staticwebapp.config.json`](public/staticwebapp.config.json) supplies the React Router SPA fallback and response headers. Deployment requires the Azure Static Web Apps secret referenced by the workflow and an API deployment compatible with the production client base URL.
 
-CI explicitly installs Node.js 24, runs `npm ci` and `npm run build`, then
-uploads the prebuilt `dist/` directory with the deployment action's app build
-disabled. It does not rely on the deployment image to choose Node or rebuild
-the application with a different toolchain.
+CI explicitly installs Node.js 24, runs `npm ci`, `npm test` with `CI=true` and
+`npm run build`, then uploads the prebuilt `dist/` directory with the deployment
+action's app build disabled. It does not rely on the deployment image to choose Node or rebuild
+the application with a different toolchain. The Node test runner is non-watch
+and must finish successfully before the build or upload starts.
 
-Workflow actions are pinned to full commit SHAs with their release tags in
-comments. The SWA action currently publishes only `v1`, not numbered v1 patch
-releases. The workflow defaults to read-only repository access; deployment and
-preview-close jobs additionally allow PR comments, with no OIDC permission
-because neither job uses OIDC. Dependabot checks npm and GitHub Actions weekly
-and groups minor/patch updates within each ecosystem.
+Official GitHub actions (`actions/*`, `github/*`) and Microsoft actions
+(`azure/*`, `Azure/*`) use readable major version tags without trailing version
+comments. All other third-party actions must remain pinned to full commit SHAs
+with release tags in comments. The SWA action currently publishes only `v1`,
+not numbered v1 patch releases. The workflow defaults to read-only repository
+access; deployment and preview-close jobs additionally allow PR comments, with
+no OIDC permission because neither job uses OIDC. Dependabot checks npm and
+GitHub Actions weekly and groups minor/patch updates within each ecosystem.
 
 Local `.env*` files are ignored, except `.env.example`. There are currently no
 tracked environment examples or templates; explicitly un-ignore any future
@@ -95,7 +101,8 @@ tracked templates rather than committing environment credentials.
 ### Browser resource policy
 
 The static hosting config retains `noindex` and SPA routes while setting CSP,
-HSTS, frame denial, referrer policy and MIME-sniffing protection. The production
+HSTS, frame denial, referrer policy, MIME-sniffing protection and
+`Permissions-Policy: camera=(), microphone=(), geolocation=()`. The production
 resource inventory covers source, HTML, public assets, Vite configuration and
 fresh build output; there are currently no environment files to inspect.
 
@@ -103,17 +110,24 @@ fresh build output; there are currently no environment files to inspect.
 | --- | --- |
 | `'self'` | Bundled scripts/styles, self-hosted fonts, images, manifest and PWA workers. |
 | `https://api.predixlab.com` | Production API requests. |
-| `https://www.googletagmanager.com`, `https://www.google-analytics.com`, `https://*.google-analytics.com`, `https://*.analytics.google.com` | Pre-allowed GA4 scripts and collection endpoints. |
-| `https://js.stripe.com`, `https://api.stripe.com`, `https://checkout.stripe.com`, `https://*.stripe.com`, `https://hooks.stripe.com` | Pre-allowed Stripe scripts, requests, checkout forms and frames. |
-| `https://accounts.google.com` | Pre-allowed Google sign-in scripts, requests, frames and forms. |
-| `https://login.microsoftonline.com`, `https://login.live.com` | Pre-allowed Microsoft sign-in requests and forms. |
-| `data:`, `https:`, `blob:` (images only) | Image sources; fonts remain local. |
+| `https://checkout.stripe.com` | Retained Stripe checkout form target only. |
+| `https://accounts.google.com` | Retained Google sign-in form target only. |
+| `https://login.microsoftonline.com`, `https://login.live.com` | Retained Microsoft sign-in form targets only. |
+| `data:` (images only) | Inline image data; fonts remain local. |
 
-GA4 and embedded provider SDKs are not currently loaded by this app; their
-origins above are compatibility defaults. Google/Microsoft OAuth and Stripe
-checkout currently use full-page redirects, not popups or embedded SDKs.
-These navigations, portal/legal links and chart attribution links do not
-require additional CSP source origins. `https://apis.google.com` is not used.
+GA4/GTM, Google Identity Services and Stripe.js are not loaded by this app.
+Google/Microsoft OAuth and Stripe checkout use full-page redirects through the
+API, not browser SDK requests or embedded frames. Their script/connection
+allowances are removed and `frame-src` is `'none'`; form targets remain allowed.
+These navigations, portal/legal links and chart attribution links do not require
+additional CSP source origins.
+
+Images are limited to `'self' data:`: the brand, favicon, touch and PWA icons are
+local; interface icons are inline SVG; CSS uses gradients rather than remote
+images; charts render canvas/inline SVG with the attribution logo disabled.
+Avatars display name/email initials, not OAuth profile pictures. No remote or
+blob image loads are used, so the blanket `https:` and `blob:` allowances are
+removed.
 
 The only inline script initializes the theme before first paint. Its exact
 SHA-256 hash is allowed in `script-src`; update that hash when editing the
