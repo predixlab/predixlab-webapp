@@ -81,7 +81,6 @@
     "marketClosed": "已收盘",
     "lastUpdated": "更新于",
     "predictions": "预测",
-    "dailyPicks": "每日推荐",
     "closeMenu": "关闭菜单",
     "primary": "主导航",
     "shortDashboard": "信号",
@@ -123,7 +122,7 @@
     "upgradePrompt": "免费账户查看延迟 10 天的每日信号。",
     "upgradeAction": "查看套餐",
     "sessionRibbon": "本次发布",
-    "pivotRibbon": "Pivot 看多 {{bullish}} / 看空 {{bearish}}",
+    "pivotRibbon": "Pivot 看涨 {{bullish}} / 看跌 {{bearish}}",
     "chartSummary": "{{symbol}} 价格图表，周期 {{period}}。",
     "mobileWorkspace": "模型",
     "modelInfo": {
@@ -143,7 +142,7 @@
         "title": "关于 Pivot",
         "summary": "Pivot 是转折点模型，主要在确认后识别潜在的价格低点和高点；符合条件的趋势事件也可能被发布。",
         "bestFor": "适合已经完成股票选择、进一步关注交易时机的场景，为入场、退出和持仓管理提供额外背景。Pivot 事件较稀疏，相比每日排名换仓更适合低换手流程。模型当前按 10 个交易日的设定周期评估，实际成交与退出规则仍由用户策略决定。",
-        "howToRead": "看多与看空表示事件方向；置信度表示该信号在当日横截面中的相对强度，不是成功概率。Pivot 事件本身较为稀疏。",
+        "howToRead": "看涨与看跌表示事件方向；评分表示该信号在当日横截面中的相对强度，不是成功概率。Pivot 事件本身较为稀疏。",
         "limits": "确认信号可能晚于精确的最低点或最高点，也并非每次事件都会形成持续反转。Pivot 不用于对整个股票池进行每日 TopK 组合排名。"
       }
     }
@@ -299,11 +298,9 @@
     "recommendation": "模型信号",
     "score": "得分",
     "strategy": "策略",
-    "rising": "上涨",
-    "declining": "下跌",
-    "buy": "买入",
-    "sell": "卖出",
-    "hold": "持有",
+    "rising": "看涨",
+    "declining": "看跌",
+    "hold": "中性",
     "dailyPicks": "每日信号",
     "predictions": "模型输出",
     "historicalData": "历史数据",
@@ -331,8 +328,8 @@
     "signalLegend": {
       "label": "历史信号标记图例",
       "alpharank": "AlphaRank 入选",
-      "pivotBullish": "Pivot 看多",
-      "pivotBearish": "Pivot 看空"
+      "pivotBullish": "Pivot 看涨",
+      "pivotBearish": "Pivot 看跌"
     }
   },
   "referrals": {
@@ -781,7 +778,7 @@
     "above_sma50": "站上 50 日线",
     "above_sma200": "站上 200 日线",
     "golden_cross": "金叉",
-    "macd_bullish": "MACD 多头",
+    "macd_bullish": "MACD 看涨",
     "save": "保存",
     "saveTitle": "保存当前筛选",
     "saveFailed": "保存失败",
@@ -868,17 +865,17 @@
     "title": "信号列表",
     "subtitle": "所选每日模型批次识别出的转折信号，按信号强度排序。",
     "streamTitle": "Pivot",
-    "streamSubtitle": "按看多与看空方向展示转折点信号。",
+    "streamSubtitle": "按看涨与看跌方向展示转折点信号。",
     "pulseEyebrow": "转折点",
-    "noBullish": "当日无看多事件。",
-    "noBearish": "当日无看空事件。",
+    "noBullish": "当日无看涨事件。",
+    "noBearish": "当日无看跌事件。",
     "unavailableSubtitle": "本次批次未发布",
     "unavailable": "Pivot 未发布",
     "unavailableHint": "本次批次缺少 Pivot，AlphaRank 仍可查看。",
-    "confidence": "置信度",
+    "confidence": "评分",
     "rank": "排名",
     "symbol": "代码",
-    "rowAria": "排名 {{rank}}，{{symbol}}，置信度 {{confidence}}",
+    "rowAria": "排名 {{rank}}，{{symbol}}，评分 {{confidence}}",
     "price": "收盘价",
     "noData": "暂无数据",
     "staleTitle": "精选数据可能过期",
@@ -893,12 +890,19 @@
       "TREND_BUY": "趋势信号",
       "BASE_BREAKOUT": "底部区间突破"
     },
+    "actions": {
+      "STRONGLY_BULLISH": "强烈看涨",
+      "BULLISH": "看涨",
+      "NEUTRAL": "中性",
+      "BEARISH": "看跌",
+      "STRONGLY_BEARISH": "强烈看跌"
+    },
     "kinds": {
       "reversal": "反转",
       "trend": "趋势"
     },
-    "bullish": "看多",
-    "bearish": "看空",
+    "bullish": "看涨",
+    "bearish": "看跌",
     "bullishHint": "{{reversals}} 反转 · {{trend}} 趋势",
     "plan": "计划",
     "rationale": "理由",
@@ -952,9 +956,9 @@
       "trough": "最大回撤",
       "signalPrice": "信号价"
     },
-    "disclaimer": "最高浮盈与最大回撤均以信号当日收盘价为基准，统计其后 {{horizon}} 个交易日，并计入盘中最高价与最低价；卖出信号下跌视为盈利。「向上多于向下」是浮盈大于回撤的信号占比。尚未走满 {{horizon}} 个交易日的信号标记为未到期，不计入平均值。以上数字未计入交易成本与税费。历史表现不代表未来收益。",
+    "disclaimer": "最高浮盈与最大回撤均以信号当日收盘价为基准，统计其后 {{horizon}} 个交易日，并计入盘中最高价与最低价；看跌信号下跌视为盈利。「向上多于向下」是浮盈大于回撤的信号占比。尚未走满 {{horizon}} 个交易日的信号标记为未到期，不计入平均值。以上数字未计入交易成本与税费。历史表现不代表未来收益。",
     "disclaimers": {
-      "pivot": "最佳与最差走势按 Pivot 持仓方向统计发布后 {{horizon}} 个交易日；看空事件中价格下跌计为盈利。未完成路径不计入平均值，数据未包含成本与税费。",
+      "pivot": "最佳与最差走势按 Pivot 持仓方向统计发布后 {{horizon}} 个交易日；看跌事件中价格下跌计为盈利。未完成路径不计入平均值，数据未包含成本与税费。",
       "alpharank": "最佳与最差走势按做多方向统计 AlphaRank 发布后 {{horizon}} 个交易日。未完成路径不计入平均值，数据未包含成本与税费。"
     },
     "avgPeak": "平均最高浮盈",

@@ -86,7 +86,11 @@ const buildPick = (
   // confirms. Reproducing that keeps the UI honest: it must read the side from
   // `direction`, never from `action`.
   const action: PivotAction =
-    r < 0.45 ? 'HOLD' : long ? (r < 0.8 ? 'STRONG_BUY' : 'BUY') : r < 0.8 ? 'STRONG_SELL' : 'SELL'
+    r < 0.45
+      ? 'NEUTRAL'
+      : long
+        ? (r < 0.8 ? 'STRONGLY_BULLISH' : 'BULLISH')
+        : r < 0.8 ? 'STRONGLY_BEARISH' : 'BEARISH'
 
   const reasons = long
     ? event === 'TREND_BUY'

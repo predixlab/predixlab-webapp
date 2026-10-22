@@ -10,6 +10,12 @@
     ]
   },
   "globalHeaders": {
-    "X-Robots-Tag": "noindex"
+    "X-Robots-Tag": "noindex",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'sha256-sSRbgUFq38khs9P+wf6Y8gpex0DVx9v8WGwCy4KU7x0='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://api.predixlab.com; frame-src 'none'; worker-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://checkout.stripe.com https://accounts.google.com https://login.microsoftonline.com https://login.live.com",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Content-Type-Options": "nosniff",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
   }
 }

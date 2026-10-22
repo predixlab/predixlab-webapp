@@ -19,10 +19,28 @@ export type PickKind = 'reversal' | 'trend'
 /**
  * The model's *state* label on the trigger bar. Context only — it does not
  * decide the side. An event is dated by its trigger while its setup may be up
- * to three sessions earlier, so the state has often decayed to HOLD or flipped
+ * to three sessions earlier, so the state has often decayed to NEUTRAL or flipped
  * by the time a reversal confirms. `direction` is the decision.
  */
-export type PivotAction = 'STRONG_BUY' | 'BUY' | 'HOLD' | 'SELL' | 'STRONG_SELL'
+export type PivotAction =
+  | 'STRONGLY_BULLISH'
+  | 'BULLISH'
+  | 'NEUTRAL'
+  | 'BEARISH'
+  | 'STRONGLY_BEARISH'
+
+export type PivotActionInput = PivotAction | 'STRONG_BUY' | 'BUY' | 'HOLD' | 'SELL' | 'STRONG_SELL'
+
+export function normalizePivotAction(action: PivotActionInput): PivotAction {
+  switch (action) {
+    case 'STRONG_BUY': return 'STRONGLY_BULLISH'
+    case 'BUY': return 'BULLISH'
+    case 'HOLD': return 'NEUTRAL'
+    case 'SELL': return 'BEARISH'
+    case 'STRONG_SELL': return 'STRONGLY_BEARISH'
+    default: return action
+  }
+}
 
 export interface PivotPick {
   date: string // 'YYYY-MM-DD'
@@ -35,7 +53,7 @@ export interface PivotPick {
   rank: number
   horizon: number
 
-  action: PivotAction
+  action: PivotActionInput
   /** Signed conviction; small magnitude (~ -0.5..0.5). */
   score: number
   /** 0..1 percentile within the day's full cross-section. */

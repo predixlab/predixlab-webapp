@@ -81,7 +81,6 @@
     "marketClosed": "Market closed",
     "lastUpdated": "Updated",
     "predictions": "Predictions",
-    "dailyPicks": "Daily Picks",
     "closeMenu": "Close menu",
     "primary": "Primary",
     "shortDashboard": "Signals",
@@ -143,7 +142,7 @@
         "title": "About Pivot",
         "summary": "Pivot is a turning-point model focused on identifying potential price lows and highs after confirmation. Some qualified trend events may also be published.",
         "bestFor": "It is useful after a ticker has been selected, as additional context for entry, exit, and position management. Its sparse events can fit lower-turnover workflows better than daily ranking. Pivot is evaluated over its configured model horizon, currently 10 trading sessions; actual execution and exit rules remain part of the user's strategy.",
-        "howToRead": "Bullish and bearish groups describe the direction of the event. Confidence is the signal's relative strength within that session, not the probability that the call will succeed. Pivot events are intentionally sparse.",
+        "howToRead": "Bullish and bearish groups describe the direction of the event. Score is the signal's relative strength within that session, not the probability that the call will succeed. Pivot events are intentionally sparse.",
         "limits": "Confirmation can arrive after the exact low or high, and not every event develops into a lasting reversal. Pivot is not intended to rank the full universe for daily TopK portfolio construction."
       }
     }
@@ -301,9 +300,7 @@
     "strategy": "Strategy",
     "rising": "Bullish",
     "declining": "Bearish",
-    "buy": "Buy",
-    "sell": "Sell",
-    "hold": "Hold",
+    "hold": "Neutral",
     "dailyPicks": "Daily Signals",
     "predictions": "Model Output",
     "historicalData": "Historical Data",
@@ -875,10 +872,10 @@
     "unavailableSubtitle": "Not published in this run",
     "unavailable": "Pivot was not published",
     "unavailableHint": "Pivot is missing from this run. AlphaRank remains available.",
-    "confidence": "Confidence",
+    "confidence": "Score",
     "rank": "Rank",
     "symbol": "Ticker",
-    "rowAria": "Rank {{rank}}, {{symbol}}, confidence {{confidence}}",
+    "rowAria": "Rank {{rank}}, {{symbol}}, score {{confidence}}",
     "price": "Close",
     "noData": "No data",
     "staleTitle": "Picks may be stale",
@@ -892,6 +889,13 @@
       "SELL_TURN": "Top reversal",
       "TREND_BUY": "Trend signal",
       "BASE_BREAKOUT": "Base breakout"
+    },
+    "actions": {
+      "STRONGLY_BULLISH": "Strongly bullish",
+      "BULLISH": "Bullish",
+      "NEUTRAL": "Neutral",
+      "BEARISH": "Bearish",
+      "STRONGLY_BEARISH": "Strongly bearish"
     },
     "kinds": {
       "reversal": "Reversal",
@@ -952,7 +956,7 @@
       "trough": "Worst point",
       "signalPrice": "Signal price"
     },
-    "disclaimer": "Best point and worst point are measured from the closing price on the day of the signal, across the {{horizon}} trading days that follow, and include intraday highs and lows. For a sell signal, a falling price counts as a gain. \"Went my way\" is the share of signals whose best point was larger than their drawdown. Signals whose {{horizon}} days have not yet passed are marked as still open and are left out of the averages. Figures exclude trading costs and taxes. Past performance does not predict future results.",
+    "disclaimer": "Best point and worst point are measured from the closing price on the day of the signal, across the {{horizon}} trading days that follow, and include intraday highs and lows. For a bearish signal, a falling price counts as a gain. \"Went my way\" is the share of signals whose best point was larger than their drawdown. Signals whose {{horizon}} days have not yet passed are marked as still open and are left out of the averages. Figures exclude trading costs and taxes. Past performance does not predict future results.",
     "disclaimers": {
       "pivot": "Best and worst points use the Pivot position side over the {{horizon}} sessions after publication; falling prices count as gains for bearish events. Open paths are excluded from averages. Figures exclude costs and taxes.",
       "alpharank": "Best and worst points use a long interpretation over the {{horizon}} sessions after AlphaRank publication. Open paths are excluded from averages. Figures exclude costs and taxes."

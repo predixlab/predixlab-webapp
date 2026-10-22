@@ -1,39 +1,34 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import type { PivotAction } from '@/types/picks'
+import { normalizePivotAction, type PivotAction, type PivotActionInput } from '@/types/picks'
 import { cn } from '@/utils'
 
 import Badge, { type BadgeTone } from './Badge'
 
 interface ActionBadgeProps {
-  action: PivotAction
+  action: PivotActionInput
   size?: 'sm' | 'md'
   label?: string
   className?: string
 }
 
 const actionTone: Record<PivotAction, BadgeTone> = {
-  STRONG_BUY: 'bull',
-  BUY: 'bull',
-  HOLD: 'neutral',
-  SELL: 'bear',
-  STRONG_SELL: 'bear',
-}
-
-const defaultLabel: Record<PivotAction, string> = {
-  STRONG_BUY: 'Strong Buy',
-  BUY: 'Buy',
-  HOLD: 'Hold',
-  SELL: 'Sell',
-  STRONG_SELL: 'Strong Sell',
+  STRONGLY_BULLISH: 'bull',
+  BULLISH: 'bull',
+  NEUTRAL: 'neutral',
+  BEARISH: 'bear',
+  STRONGLY_BEARISH: 'bear',
 }
 
 /** Emphasise STRONG_* variants with a heavier weight while keeping tone. */
 const ActionBadge: React.FC<ActionBadgeProps> = ({ action, size = 'md', label, className }) => {
-  const strong = action === 'STRONG_BUY' || action === 'STRONG_SELL'
+  const { t } = useTranslation()
+  const normalizedAction = normalizePivotAction(action)
+  const strong = normalizedAction === 'STRONGLY_BULLISH' || normalizedAction === 'STRONGLY_BEARISH'
   return (
-    <Badge tone={actionTone[action]} size={size} dot className={cn(strong && 'font-semibold', className)}>
-      {label ?? defaultLabel[action]}
+    <Badge tone={actionTone[normalizedAction]} size={size} dot className={cn(strong && 'font-semibold', className)}>
+      {label ?? t(`picks.actions.${normalizedAction}`)}
     </Badge>
   )
 }
