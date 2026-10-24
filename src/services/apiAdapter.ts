@@ -83,6 +83,12 @@ import {
   ReferralValidationResponse,
   ReferralSummary,
 } from '@/types'
+import type {
+  AgentConnection,
+  AgentApiKeyList,
+  AgentApiKeyCreate,
+  AgentApiKeyIssued,
+} from '@/types/agent'
 
 import { apiClient } from './api'
 import { mockService } from './mockService'
@@ -97,6 +103,37 @@ const isMockMode = (): boolean => {
 
 // API Adapter that switches between real API and mock service
 class ApiAdapter {
+  private requireRealAgentService(): void {
+    if (isMockMode()) {
+      throw { status_code: 501, detail: 'Agent key management is unavailable in mock mode.' }
+    }
+  }
+
+  async getAgentConnection(): Promise<AgentConnection> {
+    this.requireRealAgentService()
+    return apiClient.getAgentConnection()
+  }
+
+  async listAgentApiKeys(limit = 10, offset = 0): Promise<AgentApiKeyList> {
+    this.requireRealAgentService()
+    return apiClient.listAgentApiKeys(limit, offset)
+  }
+
+  async createAgentApiKey(data: AgentApiKeyCreate): Promise<AgentApiKeyIssued> {
+    this.requireRealAgentService()
+    return apiClient.createAgentApiKey(data)
+  }
+
+  async rotateAgentApiKey(id: string, version: number): Promise<AgentApiKeyIssued> {
+    this.requireRealAgentService()
+    return apiClient.rotateAgentApiKey(id, version)
+  }
+
+  async revokeAgentApiKey(id: string, version: number): Promise<void> {
+    this.requireRealAgentService()
+    return apiClient.revokeAgentApiKey(id, version)
+  }
+
   // Auth API methods - Email login/registration
   async requestEmailLoginCode(data: EmailLoginRequest): Promise<void> {
     if (isMockMode()) {

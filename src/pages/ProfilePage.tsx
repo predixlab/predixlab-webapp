@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
+import AgentConnectionPanel from '@/components/profile/AgentConnectionPanel'
 import { Alert, Badge, Button, Field, Modal, Page, PageHeader, Panel, Skeleton } from '@/components/ui'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/services/apiAdapter'
@@ -842,6 +843,8 @@ const ProfilePage: React.FC = () => {
           </Panel>
         </div>
       </div>
+
+      {user ? <AgentConnectionPanel userId={user.id} /> : null}
 
       <Panel
         className="border-bear-line"

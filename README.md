@@ -22,6 +22,7 @@ Dashboard consumes the API; it does not collect market data or generate signals.
 - Signal performance, unusual options activity, profile, and subscription pages.
 - Email-code and OAuth sign-in, English and Chinese interfaces, and light and dark themes.
 - Referral links with verified-registration attribution, premium-access rewards, and conversion reporting.
+- MCP agent connections and API key management.
 
 All routes except sign-in, registration, and OAuth callbacks are protected. Feature availability and data recency remain subject to API configuration and account entitlement.
 
@@ -72,8 +73,8 @@ npm run preview
 
 `build` type-checks the project and writes static assets to `dist/`. `test`
 uses Node's built-in runner and Vite's SSR loader to check vocabulary
-compatibility, API response normalization, localized badges and the static
-hosting policy without a live API.
+compatibility, API response normalization, localized badges, agent configuration
+safety/key lifecycle and the static hosting policy without a live API.
 
 ## Design and deployment
 
