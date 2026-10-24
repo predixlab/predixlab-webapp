@@ -87,6 +87,12 @@ import {
   ReferralValidationResponse,
   ReferralSummary,
 } from '@/types'
+import type {
+  AgentConnection,
+  AgentApiKeyList,
+  AgentApiKeyCreate,
+  AgentApiKeyIssued,
+} from '@/types/agent'
 import { normalizeSignalStrength } from '@/types/market'
 
 export const isUnauthorizedError = (error: unknown): boolean => {
@@ -105,6 +111,39 @@ export const isUnauthorizedError = (error: unknown): boolean => {
 class ApiClient {
   private client: AxiosInstance
   private refreshTokenPromise: Promise<string | null> | null = null
+
+  async getAgentConnection(): Promise<AgentConnection> {
+    const response = await this.client.get<AgentConnection>('/v1/agent/connection')
+    return response.data
+  }
+
+  async listAgentApiKeys(limit = 10, offset = 0): Promise<AgentApiKeyList> {
+    const response = await this.client.get<AgentApiKeyList>('/v1/agent/api-keys', {
+      params: { limit, offset },
+    })
+    return response.data
+  }
+
+  async createAgentApiKey(data: AgentApiKeyCreate): Promise<AgentApiKeyIssued> {
+    const response = await this.client.post<AgentApiKeyIssued>('/v1/agent/api-keys', {
+      ...data,
+      name: data.name.trim(),
+    })
+    return response.data
+  }
+
+  async rotateAgentApiKey(id: string, version: number): Promise<AgentApiKeyIssued> {
+    const response = await this.client.post<AgentApiKeyIssued>(
+      `/v1/agent/api-keys/${encodeURIComponent(id)}/rotate`, { version },
+    )
+    return response.data
+  }
+
+  async revokeAgentApiKey(id: string, version: number): Promise<void> {
+    await this.client.delete(`/v1/agent/api-keys/${encodeURIComponent(id)}`, {
+      params: { version },
+    })
+  }
 
   constructor() {
     const baseURL = import.meta.env.PROD ? 'https://api.predixlab.com/api' : '/api'

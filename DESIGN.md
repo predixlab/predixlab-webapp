@@ -82,6 +82,31 @@ Daily Signals pairs the AlphaRank and Pivot boards. Selecting a ticker opens its
 - The ATM IV term-structure and smile/skew cards share desktop header, plot, and footer rows. Keep both plotting regions and outer cards aligned even when translations wrap or a series is unavailable; retain the skew comparison values in the footer.
 - Authentication uses a two-column introduction and form on desktop, and a focused step-by-step form on phones. Verification uses one native numeric field for autofill, paste, selection, and corrections. Viewing the notice does not imply accepting it.
 - Profile separates identity, email preferences, membership, referrals, and destructive actions. Billing sheets keep both plan actions reachable, use server-provided prices, and show an explicit unavailable state rather than inventing a fallback quote. Referral links support native selection, copy, and the existing share flow.
+- Profile's agent panel separates generic HTTP MCP setup from named key management.
+  Stack connection settings above key management at every width, divided by one
+  rule. Keep the panel's hierarchy functional rather than filling empty space
+  with decorative cards.
+  Keep the read-only endpoint input and its copy button in one row at all
+  supported widths. Key usage comes from the server's global count and limit,
+  not the visible page; disable creation at the cap while preserving rotation
+  and revocation.
+  Show the endpoint, Bearer authentication instructions, and one neutral
+  configuration example, without client-specific installers or configuration
+  branches. The ordinary template contains a clearly labeled key placeholder;
+  copying a complete configuration with the secret requires explicit consent
+  inside the one-time key dialog. Key records are compact rows with native
+  disclosures for secondary metadata and rotation/revocation actions.
+  Collapsed rows align name/prefix, expiry, status, and the trailing disclosure
+  indicator. Phones move expiry below identity without losing status alignment.
+  Expanded action
+  buttons retain text labels, accessible names, and 44px targets. Load all key
+  records but show only active keys in the main list. Put expired keys in a
+  default-closed disclosure, retaining quota guidance and rotation/revocation.
+  Put revoked records in a separate default-closed read-only history with no
+  action buttons. A no-active-keys state must not erase inactive history. Show
+  history without a pagination footer. Rotation/revocation require item-specific confirmation. Newly
+  issued secrets remain in a one-time dialog until explicitly dismissed, even
+  if metadata refresh fails; never persist them in web storage or URLs.
 
 ## Shared components
 
